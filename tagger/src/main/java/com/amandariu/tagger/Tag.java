@@ -1,7 +1,5 @@
 package com.amandariu.tagger;
 
-import com.amandariu.tagger.common.ColorConverter;
-
 /**
  *
  *
@@ -22,7 +20,7 @@ public class Tag {
     public Tag(ITag otag) {
         mId = otag.getId();
         mLabel = otag.getLabel();
-        mColorInt = ColorConverter.getColorInt(otag.getColor());
+        mColorInt = TagUtils.getColorInt(otag.getColor());
     }
 
     public int getId() {

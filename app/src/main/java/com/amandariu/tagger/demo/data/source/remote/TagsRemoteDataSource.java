@@ -3,7 +3,7 @@ package com.amandariu.tagger.demo.data.source.remote;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.amandariu.tagger.R;
+import com.amandariu.tagger.demo.R;
 import com.amandariu.tagger.demo.TaggerApplication;
 import com.amandariu.tagger.demo.data.Tag;
 import com.amandariu.tagger.demo.data.source.ITagsDataSource;

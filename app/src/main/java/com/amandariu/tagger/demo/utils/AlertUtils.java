@@ -6,7 +6,7 @@ import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.amandariu.tagger.R;
+import com.amandariu.tagger.demo.R;
 
 /**
  * Various helper methods for displaying alert messages to the end user.

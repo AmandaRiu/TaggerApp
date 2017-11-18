@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.amandariu.tagger.R;
+import com.amandariu.tagger.demo.R;
 import com.amandariu.tagger.demo.Injection;
 import com.amandariu.tagger.demo.data.Tag;
 import com.amandariu.tagger.demo.utils.AlertUtils;

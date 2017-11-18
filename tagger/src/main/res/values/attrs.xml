@@ -4,5 +4,7 @@
         <attr name="chipColor" format="reference|color"/>
         <attr name="chipLabel" format="reference|string"/>
         <attr name="allowDelete" format="boolean"/>
+        <attr name="chipHeight" format="reference|integer"/>
+
     </declare-styleable>
 </resources>

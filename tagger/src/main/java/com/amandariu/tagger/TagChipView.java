@@ -13,8 +13,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.amandariu.tagger.common.AndroidUtils;
-
 
 /**
  * Custom Chip view. This view contains a label, and optionally, a 'delete' button.
@@ -25,15 +23,17 @@ public class TagChipView extends LinearLayout {
 
     private static final String TAG = TagChipView.class.getSimpleName();
 
-    interface OnTagDeletedListener {
-        void onTagDeleted(TagChipView chip);
+    interface TagChipListener {
+        void onTagClosed(TagChipView chip);
+        void onTagClicked(TagChipView chip);
     }
+
 
     private Tag mTag;
     private TextView mTxtLabel;
     private ImageView mBtnDelete;
 
-    private OnTagDeletedListener mListener = null;
+    private TagChipListener mListener = null;
 
     public TagChipView(Context context) {
         this(context, null);
@@ -75,7 +75,7 @@ public class TagChipView extends LinearLayout {
                 public void onClick(View v) {
                     Log.d("AMANDA-TEST", "onClick: Delete clicked for view: " + v);
                     if (mListener != null) {
-                        mListener.onTagDeleted(TagChipView.this);
+                        mListener.onTagClosed(TagChipView.this);
                     }
                 }
             });
@@ -94,7 +94,7 @@ public class TagChipView extends LinearLayout {
         if (mTag.getColorInt() != -1) {
             GradientDrawable gd = new GradientDrawable();
             gd.setColor(mTag.getColorInt());
-            gd.setCornerRadius(AndroidUtils.getDensityPixel(getContext(), 16));
+            gd.setCornerRadius(TagUtils.getDensityPixel(getContext(), 16));
             setBackground(gd);
         }
         invalidate();
@@ -107,7 +107,7 @@ public class TagChipView extends LinearLayout {
     }
 
 
-    public void setOnTagDeletedListener(OnTagDeletedListener listener) {
+    public void setOnTagDeletedListener(TagChipListener listener) {
         mListener = listener;
     }
 
