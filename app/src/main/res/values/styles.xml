@@ -1,0 +1,10 @@
+<resources>
+
+    <style name="TextAppearance.AR" parent="TextAppearance.AppCompat.Large">
+
+    </style>
+
+    <style name="TextAppearance.AR.Progress">
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
+</resources>

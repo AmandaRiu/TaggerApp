@@ -1,0 +1,121 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion rootProject.compileSdkVersion
+    buildToolsVersion rootProject.buildToolsVersion
+
+    defaultConfig {
+        applicationId "com.amandariu.tagger"
+        minSdkVersion rootProject.minSdkVersion
+        targetSdkVersion rootProject.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
+    }
+    buildTypes {
+        debug {
+            debuggable true
+            minifyEnabled false
+            useProguard false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            testProguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguardTest-rules.pro'
+        }
+        release {
+            minifyEnabled true
+            useProguard true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            testProguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguardTest-rules.pro'
+        }
+    }
+    flavorDimensions "default"
+
+    productFlavors {
+        mock {
+            dimension "default"
+            applicationIdSuffix = ".mock"
+        }
+        prod {
+            dimension "default"
+        }
+    }
+
+    // Remove mockRelease as it's not needed.
+    android.variantFilter { variant ->
+        if (variant.buildType.name.equals('release')
+                && variant.getFlavors().get(0).name.equals('mock')) {
+            variant.setIgnore(true);
+        }
+    }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+
+    // Always show the result of every unit test, even if it passes.
+    testOptions.unitTests.all {
+        testLogging {
+            events 'passed', 'skipped', 'failed', 'standardOut', 'standardError'
+        }
+    }
+
+    sourceSets {
+        main { assets.srcDirs = ['src/main/assets', 'src/androidTest/assets/', 'src/test/assets/'] }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(":tagger")
+    implementation "com.android.support:appcompat-v7:$supportLibVersion"
+    implementation "com.android.support.constraint:constraint-layout:$constraintLayoutVersion"
+    implementation "com.google.guava:guava:$guavaVersion"
+    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    implementation "com.android.support.test.espresso:espresso-idling-resource:$espressoVersion"
+    implementation ("com.squareup.okhttp3:logging-interceptor:$okhttp3LoggingInterceptorVerson") {
+        exclude group: 'com.squareup.okhttp3', module: 'okhttp'
+    }
+    implementation("com.github.aurae.retrofit2:converter-logansquare:$loganSquareConverterVersion") {
+        exclude group: 'com.squareup.retrofit2', module: 'retrofit'
+    }
+    annotationProcessor "com.bluelinelabs:logansquare-compiler:$loganSquareVersion"
+    //
+    // Lifecycle architecture
+    implementation "android.arch.lifecycle:extensions:$lifecycleVersion"
+    annotationProcessor "android.arch.lifecycle:compiler:$lifecycleVersion"
+    implementation "android.arch.lifecycle:extensions:$lifecycleVersion"
+    implementation "android.arch.persistence.room:runtime:$roomVersion"
+    implementation "android.arch.persistence.room:runtime:$roomVersion"
+    annotationProcessor "android.arch.persistence.room:compiler:$roomVersion"
+    //
+    // Dependencies for local unit tests
+    testImplementation "junit:junit:$junitVersion"
+    testImplementation "org.mockito:mockito-all:$mockitoVersion"
+    testImplementation "org.hamcrest:hamcrest-all:$hamcrestVersion"
+    //
+    // Android Testing Support Library's runner and rules
+    androidTestImplementation "com.android.support.test:rules:$rulesVersion"
+    //
+    // Dependencies for Android unit tests
+    androidTestImplementation "org.mockito:mockito-core:$mockitoVersion"
+    androidTestImplementation("com.squareup.okhttp3:mockwebserver:$mockWebServerVersion") {
+        exclude group: 'com.squareup.okhttp3', module: 'okhttp'
+        exclude group: 'junit', module: 'junit'
+    }
+    //
+    // Espresso UI Testing
+    androidTestImplementation("com.android.support.test.espresso:espresso-core:$espressoVersion") {
+        exclude group: 'com.android.support.test', module: 'runner'
+        exclude group: 'com.android.support.test', module: 'rules'
+    }
+    //
+    // Leak Canary
+    debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
+    releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanaryVersion"
+}
