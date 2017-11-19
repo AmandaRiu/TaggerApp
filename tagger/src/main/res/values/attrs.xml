@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="TagChipView">
-        <attr name="chipColor" format="reference|color"/>
-        <attr name="chipLabel" format="reference|string"/>
-        <attr name="allowDelete" format="boolean"/>
-        <attr name="chipHeight" format="reference|integer"/>
-
+        <attr name="tagChipLabel" format="reference|string"/>
+        <attr name="tagChipAllowClose" format="boolean"/>
+        <attr name="tagChipLabelColor" format="reference|color"/>
     </declare-styleable>
 </resources>

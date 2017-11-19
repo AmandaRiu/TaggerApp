@@ -25,7 +25,6 @@ public class TagChipView extends LinearLayout {
 
     interface TagChipListener {
         void onTagClosed(TagChipView chip);
-        void onTagClicked(TagChipView chip);
     }
 
 
@@ -57,20 +56,20 @@ public class TagChipView extends LinearLayout {
         final TypedArray a = context.getTheme()
                 .obtainStyledAttributes(attrs, R.styleable.TagChipView, 0, 0);
         try {
-            String label = a.getString(R.styleable.TagChipView_chipLabel);
+            String label = a.getString(R.styleable.TagChipView_tagChipLabel);
             if (label != null) {
                 mTxtLabel.setText(label);
             }
-            boolean allowDelete = a.getBoolean(R.styleable.TagChipView_allowDelete, true);
+            int labelColor = a.getColor(R.styleable.TagChipView_tagChipLabelColor, 0xffffffff);
+            mTxtLabel.setTextColor(labelColor);
+            boolean allowDelete = a.getBoolean(R.styleable.TagChipView_tagChipAllowClose, true);
             mBtnDelete.setVisibility(allowDelete ? VISIBLE : GONE);
-            int color = a.getColor(R.styleable.TagChipView_chipColor, 0xff000000);
-            setChipTag(new Tag(0, label, color));
         } finally {
             a.recycle();
         }
 
         if (mBtnDelete.getVisibility() == VISIBLE) {
-            mBtnDelete.setOnClickListener(new OnClickListener() {
+            setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Log.d("AMANDA-TEST", "onClick: Delete clicked for view: " + v);

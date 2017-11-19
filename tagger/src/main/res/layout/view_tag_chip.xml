@@ -5,6 +5,10 @@
     android:orientation="horizontal"
     android:layout_width="wrap_content"
     android:layout_height="32dp"
+    android:paddingLeft="12dp"
+    android:paddingStart="12dp"
+    android:paddingRight="4dp"
+    android:paddingEnd="4dp"
     tools:background="#FF668899">
 
     <TextView
@@ -27,6 +31,7 @@
         android:background="@null"
         android:scaleType="fitXY"
         android:padding="4dp"
+        android:layout_margin="4dp"
         android:layout_gravity="center_vertical"
         android:src="@drawable/tag_delete_bg"/>
 </LinearLayout>

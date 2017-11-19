@@ -3,6 +3,7 @@ package com.amandariu.tagger;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 /**
  * @author amandariu (11/18/17)
@@ -18,15 +19,17 @@ public final class TagUtils {
     }
 
     public static int getColorInt(@NonNull String colorString) {
-        int result = Color.parseColor(colorString);
+        //
+        // Try prepending it with a '#' symbol. Would've checked for this
+        // first but it actually covers two different scenarios if we just attempt
+        // it first and then do this.
+        String newColorString = "#" + colorString;
+        Log.d("AMANDA-TEST", "getColorInt: attempting to parse: " +  newColorString);
+        int result = Color.parseColor(newColorString);
         if (result == -1) {
-            //
-            // Try prepending it with a '#' symbol. Would've checked for this
-            // first but it actually covers two different scenarios if we just attempt
-            // it first and then do this.
-            result = Color.parseColor("#" + colorString);
+            Log.d("AMANDA-TEST", "getColorInt: color not found - using gray");
+            return 0xFF666666;
         }
-
         return result;
     }
 }

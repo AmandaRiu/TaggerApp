@@ -1,5 +1,6 @@
 package com.amandariu.tagger.demo.main;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,6 +13,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.amandariu.tagger.ITag;
+import com.amandariu.tagger.TaggerActivity;
 import com.amandariu.tagger.demo.R;
 import com.amandariu.tagger.demo.Injection;
 import com.amandariu.tagger.demo.data.Tag;
@@ -21,6 +24,7 @@ import com.amandariu.tagger.demo.utils.EspressoIdlingResource;
 import com.bluelinelabs.logansquare.LoganSquare;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements MainContract.View, View.OnClickListener {
@@ -33,7 +37,10 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     private TextView mTxtAvailableTags = null;
     private TextView mTxtSelectedTags = null;
     private ViewGroup mViewLoading = null;
-
+    //
+    // State
+    private List<Tag> mAvailableTags = null;
+    private List<Tag> mSelectedTags = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,6 +128,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         } else {
             mTxtSelectedTags.setText(R.string.no_avail_tags);
         }
+        mAvailableTags = tags;
     }
 
     /**
@@ -144,6 +152,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         } else {
             mTxtSelectedTags.setText(R.string.no_sel_tags);
         }
+        mSelectedTags = tags;
     }
 
     /**
@@ -194,7 +203,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                 break;
 
             case R.id.btn_selectTags:
-                // TODO: 11/4/17
+                openTagSelector();
                 break;
 
             default:
@@ -204,10 +213,47 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     }
     //endregion
 
+
+    private void openTagSelector() {
+        Intent intent = new Intent(MainActivity.this, TaggerActivity.class);
+        List<com.amandariu.tagger.Tag> taggerAvailableTags = new ArrayList<>();
+        List<com.amandariu.tagger.Tag> taggerSelectedTags = new ArrayList<>();
+        if (mAvailableTags == null || mAvailableTags.size() == 0) {
+            showError(getString(R.string.error_no_available_tags));
+        }
+        for (Tag t : mAvailableTags) {
+            taggerAvailableTags.add(new com.amandariu.tagger.Tag(t));
+        }
+        if (mSelectedTags != null && mSelectedTags.size() > 0) {
+            for (Tag t : mSelectedTags) {
+                taggerSelectedTags.add(new com.amandariu.tagger.Tag(t));
+            }
+        }
+        intent.putParcelableArrayListExtra(TaggerActivity.ARG_AVAILABLE_TAGS, (ArrayList)taggerAvailableTags);
+        intent.putParcelableArrayListExtra(TaggerActivity.ARG_SELECTED_TAGS, (ArrayList)taggerSelectedTags);
+        startActivityForResult(intent, TaggerActivity.RESULT_CODE);
+    }
+
     //region Testing
     @VisibleForTesting
     public IdlingResource getCountingIdlingResource() {
         return EspressoIdlingResource.getIdlingResource();
     }
     //endregion
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == TaggerActivity.RESULT_CODE) {
+            if (resultCode == RESULT_OK) {
+                ArrayList<com.amandariu.tagger.Tag> tags = data.getParcelableArrayListExtra(TaggerActivity.ARG_SELECTED_TAGS);
+                List<Tag> tagsList = new ArrayList<>();
+                for (com.amandariu.tagger.Tag t : tags) {
+                    tagsList.add(new Tag((ITag)t));
+                }
+                setSelectedTags(tagsList);
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 }

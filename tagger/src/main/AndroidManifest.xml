@@ -1,2 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.amandariu.tagger" />
+    package="com.amandariu.tagger">
+
+    <application>
+        <activity
+            android:name=".TaggerActivity"
+            android:label="@string/activity_name"/>
+    </application>
+
+</manifest>
