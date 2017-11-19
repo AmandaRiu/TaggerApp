@@ -2,14 +2,15 @@ package com.amandariu.tagger.demo.data.source.local.db;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
-
 import com.amandariu.tagger.ITag;
 
 /**
+ * Represents a single table row in the tags database.
+ *
  * @author amandariu (11/12/17)
  */
 @Entity(tableName = "tags")
-public class TagEntity implements ITag {
+public class TagEntity {
 
     @PrimaryKey
     private int id;
@@ -26,7 +27,6 @@ public class TagEntity implements ITag {
         this.color = tag.getColor();
     }
 
-    @Override
     public int getId() {
         return id;
     }
@@ -35,7 +35,6 @@ public class TagEntity implements ITag {
         this.id = id;
     }
 
-    @Override
     public String getLabel() {
         return label;
     }
@@ -44,7 +43,6 @@ public class TagEntity implements ITag {
         this.label = label;
     }
 
-    @Override
     public String getColor() {
         return color;
     }

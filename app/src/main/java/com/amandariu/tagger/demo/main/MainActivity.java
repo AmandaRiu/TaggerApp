@@ -2,6 +2,7 @@ package com.amandariu.tagger.demo.main;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
@@ -17,7 +18,6 @@ import com.amandariu.tagger.ITag;
 import com.amandariu.tagger.TaggerActivity;
 import com.amandariu.tagger.demo.R;
 import com.amandariu.tagger.demo.Injection;
-import com.amandariu.tagger.demo.data.Tag;
 import com.amandariu.tagger.demo.utils.AlertUtils;
 import com.amandariu.tagger.demo.utils.AndroidUtils;
 import com.amandariu.tagger.demo.utils.EspressoIdlingResource;
@@ -39,8 +39,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     private ViewGroup mViewLoading = null;
     //
     // State
-    private List<Tag> mAvailableTags = null;
-    private List<Tag> mSelectedTags = null;
+    private List<? extends ITag> mAvailableTags = null;
+    private List<? extends ITag> mSelectedTags = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +90,6 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     //region MainContract.View
     /**
      * Set the presenter for the view.
-     *
      * @param presenter The presenter for this view.
      */
     @Override
@@ -100,7 +99,6 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
 
     /**
      * Request the loading indicator be displayed or hidden.
-     *
      * @param active If true, show the loading indicator. If false, hide it.
      */
     @Override
@@ -110,11 +108,10 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
 
     /**
      * Update the view with the available tags provided.
-     *
      * @param tags The tags fetched from the Repo.
      */
     @Override
-    public void setAvailableTags(@Nullable List<Tag> tags) {
+    public void setAvailableTags(@Nullable List<? extends ITag> tags) {
         Log.d(TAG, "Updating view with available tags ["
                 + (tags == null ? "null" : tags.size()) + "]");
 
@@ -138,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
      * @param tags A list of tags the user selected.
      */
     @Override
-    public void setSelectedTags(@Nullable List<Tag> tags) {
+    public void setSelectedTags(@Nullable List<? extends ITag> tags) {
         Log.d(TAG, "Updating view with selected tags ["
                 + (tags == null ? "null" : tags.size()) + "]");
 
@@ -196,16 +193,16 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_api:
+                mTxtAvailableTags.setText("");
                 mPresenter.loadTagsFromRemote();
                 break;
             case R.id.btn_database:
+                mTxtAvailableTags.setText("");
                 mPresenter.loadTagsFromLocal();
                 break;
-
             case R.id.btn_selectTags:
-                openTagSelector();
+                mPresenter.selectTags(this, mAvailableTags, mSelectedTags);
                 break;
-
             default:
                 Log.e(TAG, "Unknown view sent to onClick handler!");
                 break;
@@ -213,26 +210,6 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     }
     //endregion
 
-
-    private void openTagSelector() {
-        Intent intent = new Intent(MainActivity.this, TaggerActivity.class);
-        List<com.amandariu.tagger.Tag> taggerAvailableTags = new ArrayList<>();
-        List<com.amandariu.tagger.Tag> taggerSelectedTags = new ArrayList<>();
-        if (mAvailableTags == null || mAvailableTags.size() == 0) {
-            showError(getString(R.string.error_no_available_tags));
-        }
-        for (Tag t : mAvailableTags) {
-            taggerAvailableTags.add(new com.amandariu.tagger.Tag(t));
-        }
-        if (mSelectedTags != null && mSelectedTags.size() > 0) {
-            for (Tag t : mSelectedTags) {
-                taggerSelectedTags.add(new com.amandariu.tagger.Tag(t));
-            }
-        }
-        intent.putParcelableArrayListExtra(TaggerActivity.ARG_AVAILABLE_TAGS, (ArrayList)taggerAvailableTags);
-        intent.putParcelableArrayListExtra(TaggerActivity.ARG_SELECTED_TAGS, (ArrayList)taggerSelectedTags);
-        startActivityForResult(intent, TaggerActivity.RESULT_CODE);
-    }
 
     //region Testing
     @VisibleForTesting
@@ -244,12 +221,15 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == TaggerActivity.RESULT_CODE) {
+        if (requestCode == TaggerActivity.REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                ArrayList<com.amandariu.tagger.Tag> tags = data.getParcelableArrayListExtra(TaggerActivity.ARG_SELECTED_TAGS);
-                List<Tag> tagsList = new ArrayList<>();
-                for (com.amandariu.tagger.Tag t : tags) {
-                    tagsList.add(new Tag((ITag)t));
+                Parcelable[] pSelTags
+                        = data.getParcelableArrayExtra(TaggerActivity.ARG_SELECTED_TAGS);
+                List<ITag> tagsList = new ArrayList<>();
+                if (pSelTags != null && pSelTags.length > 0) {
+                    for (Parcelable p : pSelTags) {
+                        tagsList.add((ITag)p);
+                    }
                 }
                 setSelectedTags(tagsList);
             }

@@ -3,8 +3,8 @@ package com.amandariu.tagger.demo.data.source;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.amandariu.tagger.ITag;
 import com.amandariu.tagger.demo.common.NetworkUtils;
-import com.amandariu.tagger.demo.data.Tag;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +29,7 @@ public class TagsRepository implements ITagRepository {
     /**
      * This variable has package local visibility so it can be accessed from tests.
      */
-    List<Tag> mCachedTags;
+    List<ITag> mCachedTags;
 
     /**
      * Marks the cache as invalid, to force an update the next time data is requested. This
@@ -145,7 +145,7 @@ public class TagsRepository implements ITagRepository {
     public void getTagsFromRemoteDataSource(@NonNull final ILoadTagsCallback callback) {
         mTagsRemoteDataSource.getTags(new ILoadTagsCallback() {
             @Override
-            public void onTagsLoaded(List<Tag> tags) {
+            public void onTagsLoaded(List<? extends ITag> tags) {
                 refreshCache(tags);
                 refreshLocalDataSource(tags);
                 callback.onTagsLoaded(tags);
@@ -169,7 +169,7 @@ public class TagsRepository implements ITagRepository {
     public void getTagsFromLocalDataSource(@NonNull final ILoadTagsCallback callback) {
         mTagsLocalDataSource.getTags(new ILoadTagsCallback() {
             @Override
-            public void onTagsLoaded(List<Tag> tags) {
+            public void onTagsLoaded(List<? extends ITag> tags) {
                 refreshCache(tags);
                 callback.onTagsLoaded(tags);
                 mIsFetchingTags = false;
@@ -189,12 +189,12 @@ public class TagsRepository implements ITagRepository {
      *
      * @param tags The tags to save to cache.
      */
-    private void refreshCache(List<Tag> tags) {
+    private void refreshCache(List<? extends ITag> tags) {
         if (mCachedTags == null) {
             mCachedTags = new ArrayList<>();
         }
         mCachedTags.clear();
-        for (Tag tag : tags) {
+        for (ITag tag : tags) {
             mCachedTags.add(tag);
         }
         mCacheIsDirty = false;
@@ -206,7 +206,7 @@ public class TagsRepository implements ITagRepository {
      *
      * @param tags The tags to be saved to the local data source.
      */
-    private void refreshLocalDataSource(List<Tag> tags) {
+    private void refreshLocalDataSource(List<? extends ITag> tags) {
         if (mTagsLocalDataSource != null) {
             mTagsLocalDataSource.saveTags(tags, new ITagsDataSource.ISaveTagsCallback() {
                 @Override

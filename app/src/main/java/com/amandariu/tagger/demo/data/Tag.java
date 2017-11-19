@@ -11,10 +11,14 @@ import com.bluelinelabs.logansquare.annotation.JsonObject;
 /**
  * Class representation of a tag element.
  *
+ * Extends {@link ITag} so it can easily be used by the custom tag selector module.
+ * Is also a LoganSquare JSON object for easy translation from the JSON received from
+ * the network to a POJO.
+ *
  * @author Amanda Riu
  */
 @JsonObject
-public class Tag implements ITag, Parcelable {
+public class Tag extends ITag implements Parcelable {
 
     @JsonField(name = "id")
     int mId;
@@ -31,27 +35,31 @@ public class Tag implements ITag, Parcelable {
         // empty constructor required by LoganSquare
     }
 
-    public Tag(ITag tag) {
-        this.mId = tag.getId();
-        this.mColor = tag.getColor();
-        this.mLabel = tag.getLabel();
-    }
-
-    public Tag(int id, String color, String label) {
+    public Tag(int id, String label, String color) {
         this.mId = id;
-        this.mColor = color;
         this.mLabel = label;
-    }
-
-    public Tag(int id, String color, String label, boolean userAdded) {
-        this(id, color, label);
-        this.mUserAdded = userAdded;
+        this.mColor = color;
     }
 
     protected Tag(Parcel in) {
         mId = in.readInt();
-        mColor = in.readString();
         mLabel = in.readString();
+        mColor = in.readString();
+    }
+
+    @Override
+    public int getId() {
+        return mId;
+    }
+
+    @Override
+    public String getLabel() {
+        return mLabel;
+    }
+
+    @Override
+    public String getColor() {
+        return mColor;
     }
 
     public static final Creator<Tag> CREATOR = new Creator<Tag>() {
@@ -65,18 +73,6 @@ public class Tag implements ITag, Parcelable {
             return new Tag[size];
         }
     };
-
-    public int getId() {
-        return mId;
-    }
-
-    public String getColor() {
-        return mColor;
-    }
-
-    public String getLabel() {
-        return mLabel;
-    }
 
     /**
      * Describe the kinds of special objects contained in this Parcelable
@@ -103,7 +99,7 @@ public class Tag implements ITag, Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(mId);
-        dest.writeString(mColor);
         dest.writeString(mLabel);
+        dest.writeString(mColor);
     }
 }

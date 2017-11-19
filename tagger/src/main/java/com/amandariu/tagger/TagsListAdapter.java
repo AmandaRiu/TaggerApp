@@ -1,6 +1,7 @@
 package com.amandariu.tagger;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,30 +12,27 @@ import com.amandariu.tagger.TagListFragment.TagListFragmentListener;
 import java.util.List;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link Tag} and makes a call to the
- * specified {@link TagListFragmentListener}.
+ * {@link RecyclerView.Adapter} that can display a list of {@link Tag}s and makes a call to the
+ * specified {@link TagListFragmentListener} when a tag selection is toggled on or off.
  */
 public class TagsListAdapter extends RecyclerView.Adapter<TagsListAdapter.ViewHolder> {
 
-    private final List<Tag> mTags;
+    private final List<ITag> mAvailableTags;
+    private final List<ITag> mSelectedTags;
     private final TagListFragmentListener mListener;
 
-    public TagsListAdapter(List<Tag> items, TagListFragmentListener listener) {
-        mTags = items;
+    public TagsListAdapter(List<ITag> availTags, List<ITag> selectedTags, TagListFragmentListener listener) {
+        mAvailableTags = availTags;
+        mSelectedTags = selectedTags;
         mListener = listener;
     }
 
-    public void deselectTag(Tag tag) {
-        for (int i = 0; i < mTags.size(); i++) {
-            if (mTags.get(i).getId() == tag.getId()) {
-                Tag matchingTag = mTags.get(i);
-                if (matchingTag.isSelected()) {
-                    matchingTag.toggleSelected();
-                }
-                notifyItemChanged(i);
-                break;
-            }
+    public void deselectTag(ITag tag) {
+        int pos = mAvailableTags.indexOf(tag);
+        if (mSelectedTags.contains(tag)) {
+            mSelectedTags.remove(tag);
         }
+        notifyItemChanged(pos);
     }
 
     @Override
@@ -46,29 +44,49 @@ public class TagsListAdapter extends RecyclerView.Adapter<TagsListAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        holder.mTag = mTags.get(position);
-        holder.mImgSelected.setVisibility(holder.mTag.isSelected() ? View.VISIBLE : View.GONE);
+        holder.mTag = mAvailableTags.get(position);
         holder.mTxtLabel.setText(holder.mTag.getLabel());
+        if (isSelected(holder.mTag)) {
+            holder.mImgSelected.setVisibility(View.VISIBLE);
+        } else {
+            holder.mImgSelected.setVisibility(View.GONE);
+        }
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                holder.mTag.toggleSelected();
-                holder.mImgSelected.setVisibility(holder.mTag.isSelected() ? View.VISIBLE : View.GONE);
-                if (null != mListener) {
-                    mListener.onTagSelectionChanged(holder.mTag);
+                if (isSelected(holder.mTag)) {
+                    //
+                    // Tag has been deselected.
+                    holder.mImgSelected.setVisibility(View.GONE);
+                    mSelectedTags.remove(holder.mTag);
+                    if (null != mListener) {
+                        mListener.onTagDeselected(holder.mTag);
+                    }
+                } else {
+                    //
+                    // Tag has been selected.
+                    holder.mImgSelected.setVisibility(View.VISIBLE);
+                    mSelectedTags.add(holder.mTag);
+                    if (null != mListener) {
+                        mListener.onTagSelected(holder.mTag);
+                    }
                 }
             }
         });
     }
 
-    @Override
-    public int getItemCount() {
-        return mTags.size();
+    private boolean isSelected(ITag tag) {
+        return mSelectedTags.contains(tag);
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    @Override
+    public int getItemCount() {
+        return mAvailableTags.size();
+    }
+
+    protected class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public Tag mTag;
+        public ITag mTag;
         public TextView mTxtLabel;
         public ImageView mImgSelected;
 

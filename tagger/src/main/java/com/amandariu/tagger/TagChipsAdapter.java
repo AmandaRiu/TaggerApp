@@ -1,12 +1,11 @@
 package com.amandariu.tagger;
 
-import android.support.annotation.Nullable;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,37 +13,33 @@ import java.util.List;
  */
 public class TagChipsAdapter extends RecyclerView.Adapter<TagChipsAdapter.ViewHolder> {
 
-    private List<Tag> mTags;
+    private final List<ITag> mSelectedTags;
     private TagChipView.TagChipListener mTagChipListener;
 
-    public TagChipsAdapter(@Nullable List<Tag> tags, TagChipView.TagChipListener listener) {
-        if (tags == null) {
-            mTags = new ArrayList<>();
-        } else {
-            mTags = tags;
-        }
+    public TagChipsAdapter(@NonNull List<ITag> tags, @NonNull TagChipView.TagChipListener listener) {
+        mSelectedTags = tags;
         mTagChipListener = listener;
     }
 
-    public void add(int position, Tag tag) {
-        mTags.add(position, tag);
+    public void add(int position, ITag tag) {
+        mSelectedTags.add(position, tag);
         notifyItemRangeInserted(position, 1);
     }
 
-    public void remove(Tag tag) {
-        int pos = mTags.indexOf(tag);
+    public void remove(ITag tag) {
+        int pos = mSelectedTags.indexOf(tag);
         if (pos >= 0) {
             remove(pos);
         }
     }
 
     public void remove(int position) {
-        mTags.remove(position);
+        mSelectedTags.remove(position);
         notifyItemRemoved(position);
     }
 
-    public List<Tag> getSelectedTags() {
-        return mTags;
+    public List<ITag> getSelectedTags() {
+        return mSelectedTags;
     }
 
     @Override
@@ -56,7 +51,7 @@ public class TagChipsAdapter extends RecyclerView.Adapter<TagChipsAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        final Tag tag = mTags.get(position);
+        final ITag tag = mSelectedTags.get(position);
         holder.view.setChipTag(tag);
         holder.view.setOnTagDeletedListener(new TagChipView.TagChipListener() {
             @Override
@@ -76,7 +71,7 @@ public class TagChipsAdapter extends RecyclerView.Adapter<TagChipsAdapter.ViewHo
      */
     @Override
     public int getItemCount() {
-        return mTags.size();
+        return mSelectedTags.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

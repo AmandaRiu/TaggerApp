@@ -4,7 +4,7 @@ import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.amandariu.tagger.demo.data.Tag;
+import com.amandariu.tagger.ITag;
 import com.amandariu.tagger.demo.data.source.local.db.TagConverter;
 import com.amandariu.tagger.demo.data.source.local.db.TagDatabase;
 import com.amandariu.tagger.demo.data.source.local.db.TagEntity;
@@ -42,7 +42,7 @@ public class GetTagsTask extends AsyncTask<Void, Void, List<TagEntity>> {
 
     @Override
     protected void onPostExecute(List<TagEntity> tags) {
-        List<Tag> newTags = TagConverter.toTagList(tags);
+        List<ITag> newTags = TagConverter.toTagList(tags);
         mCallback.onTagsLoaded(newTags);
     }
 }

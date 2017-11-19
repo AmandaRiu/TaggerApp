@@ -1,9 +1,7 @@
 package com.amandariu.tagger.demo.data.source;
 
 import android.support.annotation.NonNull;
-
-import com.amandariu.tagger.demo.data.Tag;
-
+import com.amandariu.tagger.ITag;
 import java.util.List;
 
 /**
@@ -18,7 +16,7 @@ public interface ISourceBase {
          * Tags have been loaded from a datasource.
          * @param tags The tags pulled from the datasource.
          */
-        void onTagsLoaded(List<Tag> tags);
+        void onTagsLoaded(List<? extends ITag> tags);
 
         /**
          * No tags available for loading.

@@ -1,9 +1,7 @@
 package com.amandariu.tagger.demo.data.source;
 
 import android.support.annotation.NonNull;
-
-import com.amandariu.tagger.demo.data.Tag;
-
+import com.amandariu.tagger.ITag;
 import java.util.List;
 
 /**
@@ -16,5 +14,5 @@ public interface ITagsDataSource extends ISourceBase {
         void onTagsSavedError(Exception e);
     }
 
-    void saveTags(@NonNull List<Tag> tags, @NonNull ISaveTagsCallback callback);
+    void saveTags(@NonNull List<? extends ITag> tags, @NonNull ISaveTagsCallback callback);
 }

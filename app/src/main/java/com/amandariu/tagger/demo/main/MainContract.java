@@ -1,12 +1,13 @@
 package com.amandariu.tagger.demo.main;
 
 
+import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.amandariu.tagger.ITag;
 import com.amandariu.tagger.demo.IBasePresenter;
 import com.amandariu.tagger.demo.IBaseView;
-import com.amandariu.tagger.demo.data.Tag;
 
 import java.util.List;
 
@@ -29,14 +30,14 @@ public interface MainContract {
          * Update the view with the available tags provided.
          * @param tags The tags fetched from the Repo.
          */
-        void setAvailableTags(@Nullable List<Tag> tags);
+        void setAvailableTags(@Nullable List<? extends ITag> tags);
 
         /**
          * Update the view with the selected tags provided. These are the tags
          * the user selected using the custom Tag selector.
          * @param tags A list of tags the user selected.
          */
-        void setSelectedTags(@Nullable List<Tag> tags);
+        void setSelectedTags(@Nullable List<? extends ITag> tags);
 
         /**
          * Display an error message to the end user.
@@ -71,21 +72,24 @@ public interface MainContract {
 
         /**
          * Explicitly load the tags from the local database.
-         *
          */
         void loadTagsFromLocal();
 
         /**
-         * Explicitly fetch tags from the remote api
+         * Explicitly fetch tags from the remote api.
          */
         void loadTagsFromRemote();
 
         /**
-         * Open the custom Tag selector. Set pre-selected tags by sending in
-         * a seed list.
-         * @param seedSelected The list of tags that should already be selected.
+         * Open the custom Tag selector.
+         *
+         * @param activity The current activity.
+         * @param availableTags A list of all available tags.
+         * @param selectedTags A list of all selected tags.
          */
-        void selectTags(@Nullable List<Tag> seedSelected);
+        void selectTags(@NonNull Activity activity,
+                        @NonNull List<? extends ITag> availableTags,
+                        @Nullable List<? extends ITag> selectedTags);
     }
     //endregion
 }

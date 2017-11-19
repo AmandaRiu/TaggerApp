@@ -2,6 +2,7 @@ package com.amandariu.tagger;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,17 +13,17 @@ import java.util.List;
 
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link TagChipsFragment.TagChipsFragmentListener} interface
- * to handle interaction events.
- * Use the {@link TagChipsFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * A fragment displaying a list of all selected Tags each drawn as a {@link TagChipView}.
+ * Allows for removing a single Tag by clicking on it.
+ * <p/>
+ * Activities containing this fragment MUST implement the {@link TagChipsFragmentListener}
+ * to be notified of changes to tag selection.
+ * <p/>
+ * Use the {@link #newInstance(List)} method for creating an instance of this Fragment.
  */
 public class TagChipsFragment extends Fragment implements TagChipView.TagChipListener {
 
-    private static final String SELECTED_TAGS = "SELECTED-TAGS";
-
+    public static final String TAG = TagChipsFragment.class.getSimpleName();
     private TagChipsFragmentListener mListener;
     private TagChipsAdapter mAdapter;
 
@@ -37,17 +38,14 @@ public class TagChipsFragment extends Fragment implements TagChipView.TagChipLis
      * @param selectedTags Tags already selected
      * @return A new instance of fragment TagChipsFragment.
      */
-    public static TagChipsFragment newInstance(List<Tag> selectedTags) {
+    public static TagChipsFragment newInstance(List<? extends ITag> selectedTags) {
         TagChipsFragment fragment = new TagChipsFragment();
         Bundle args = new Bundle();
-        args.putParcelableArrayList(SELECTED_TAGS, (ArrayList)selectedTags);
+        args.putParcelableArray(
+                TaggerActivity.ARG_SELECTED_TAGS,
+                selectedTags.toArray(new ITag[selectedTags.size()]));
         fragment.setArguments(args);
         return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -56,11 +54,24 @@ public class TagChipsFragment extends Fragment implements TagChipView.TagChipLis
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_tag_chips, container, false);
         TagChipsLayout layout = v.findViewById(R.id.tagChipsLayout);
-        if (getArguments() != null) {
-            List<Tag> selectedTags = getArguments().getParcelableArrayList(SELECTED_TAGS);
-            mAdapter = new TagChipsAdapter(selectedTags, this);
-            layout.setAdapter(mAdapter);
+        if (getArguments() == null) {
+            throw new IllegalArgumentException("Selected Tags must be included in" +
+                    " the arguments for this fragment. Please use the newInstance(...) method for" +
+                    " proper instantiation.");
         }
+        Parcelable[] pSelTags = getArguments().getParcelableArray(TaggerActivity.ARG_SELECTED_TAGS);
+        List<ITag> selectedTags = new ArrayList<>();
+        if (pSelTags != null && pSelTags.length > 0) {
+            for (Parcelable p : pSelTags) {
+                if (!(p instanceof ITag)) {
+                    throw new ClassCastException("Invalid Array of Selected Tags. " +
+                            "The tags MUST extend ITag!");
+                }
+                selectedTags.add((ITag)p);
+            }
+        }
+        mAdapter = new TagChipsAdapter(selectedTags, this);
+        layout.setAdapter(mAdapter);
         return v;
     }
 
@@ -86,7 +97,7 @@ public class TagChipsFragment extends Fragment implements TagChipView.TagChipLis
     @Override
     public void onTagClosed(TagChipView chip) {
         if (mListener != null) {
-            mListener.onTagRemoved(chip.getChipTag());
+            mListener.onTagChipClosed(chip.getChipTag());
         }
     }
 
@@ -97,19 +108,24 @@ public class TagChipsFragment extends Fragment implements TagChipView.TagChipLis
         super.onDestroy();
     }
 
-    public void addTag(Tag tag) {
+    public void addTag(ITag tag) {
         mAdapter.add(mAdapter.getItemCount(), tag);
     }
 
-    public void removeTag(Tag tag) {
+    public void removeTag(ITag tag) {
         mAdapter.remove(tag);
     }
 
-    public interface TagChipsFragmentListener {
-        void onTagRemoved(Tag tag);
+    public List<ITag> getSelectedTags() {
+        return mAdapter.getSelectedTags();
     }
 
-    public List<Tag> getSelectedTags() {
-        return mAdapter.getSelectedTags();
+    public interface TagChipsFragmentListener {
+        /**
+         * User removed the Tag from the Tag Chips View by closing it.
+         * @param tag The {@link ITag} that has been removed from the
+         *            selected list.
+         */
+        void onTagChipClosed(ITag tag);
     }
 }

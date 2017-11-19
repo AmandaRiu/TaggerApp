@@ -1,10 +1,13 @@
 package com.amandariu.tagger.demo.main;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.amandariu.tagger.demo.data.Tag;
+import com.amandariu.tagger.ITag;
+import com.amandariu.tagger.TaggerActivity;
 import com.amandariu.tagger.demo.data.source.ISourceBase;
 import com.amandariu.tagger.demo.data.source.ITagRepository;
 import com.amandariu.tagger.demo.data.source.ITagsDataSource;
@@ -38,7 +41,7 @@ public class MainPresenter implements MainContract.Presenter {
         mGetAvailableTagsCallback = new ITagsDataSource.ILoadTagsCallback() {
 
             @Override
-            public void onTagsLoaded(List<Tag > tags) {
+            public void onTagsLoaded(List<? extends ITag> tags) {
                 //
                 // This callback may be called twice, once for cache and once for loading
                 // the data from the remote API, so we must check before decrementing.
@@ -107,7 +110,6 @@ public class MainPresenter implements MainContract.Presenter {
 
     /**
      * Load the tags from the various data sources.
-     *
      * @param forceUpdate If true, rebuild the cache with fresh data.
      */
     @Override
@@ -116,15 +118,21 @@ public class MainPresenter implements MainContract.Presenter {
         mFirstLoad = false;
     }
 
+
     /**
-     * Open the custom Tag selector. Set pre-selected tags by sending in
-     * a seed list.
+     * Open the custom Tag selector.
      *
-     * @param seedSelected The list of tags that should already be selected.
+     * @param activity      The current activity.
+     * @param availableTags A list of all available tags.
+     * @param selectedTags  A list of all selected tags.
      */
     @Override
-    public void selectTags(@Nullable List<Tag> seedSelected) {
+    public void selectTags(@NonNull Activity activity,
+                           @NonNull List<? extends ITag> availableTags,
+                           @Nullable List<? extends ITag> selectedTags) {
 
+        Intent intent = TaggerActivity.createIntent(activity, availableTags, selectedTags);
+        activity.startActivityForResult(intent, TaggerActivity.REQUEST_CODE);
     }
 
     private void loadTags(boolean forceUpdate, final boolean showLoadingUi) {

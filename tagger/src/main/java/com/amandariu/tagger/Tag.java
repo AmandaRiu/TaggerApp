@@ -4,38 +4,33 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- *
+ * Class representation of a Tag.
+ * todo do I even need this class anymore?
  *
  * @author amandariu (11/12/17)
  */
-public class Tag implements Parcelable, ITag {
+public class Tag extends ITag implements Parcelable {
 
     private int mId;
     private String mLabel;
-    private int mColorInt;
     private String mColor;
-    private boolean mIsSelected = false;
 
     public Tag(int id, String label, String color) {
         mId = id;
         mLabel = label;
         mColor = color;
-        mColorInt = TagUtils.getColorInt(color);
     }
 
     public Tag(ITag otag) {
         mId = otag.getId();
         mLabel = otag.getLabel();
-        mColorInt = TagUtils.getColorInt(otag.getColor());
         mColor = otag.getColor();
     }
 
     protected Tag(Parcel in) {
         mId = in.readInt();
         mLabel = in.readString();
-        mColorInt = in.readInt();
         mColor = in.readString();
-        mIsSelected = in.readByte() != 0;
     }
 
     public static final Creator<Tag> CREATOR = new Creator<Tag>() {
@@ -59,20 +54,13 @@ public class Tag implements Parcelable, ITag {
     }
 
     public int getColorInt() {
-        return mColorInt;
+        return TagUtils.getColorInt(mColor);
     }
 
     public String getColor() {
         return mColor;
     }
 
-    public boolean isSelected() {
-        return mIsSelected;
-    }
-
-    public void toggleSelected() {
-        mIsSelected = !mIsSelected;
-    }
 
     /**
      * Describe the kinds of special objects contained in this Parcelable
@@ -100,8 +88,6 @@ public class Tag implements Parcelable, ITag {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(mId);
         dest.writeString(mLabel);
-        dest.writeInt(mColorInt);
         dest.writeString(mColor);
-        dest.writeByte((byte) (mIsSelected ? 1 : 0));
     }
 }

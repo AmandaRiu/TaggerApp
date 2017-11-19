@@ -4,8 +4,8 @@ import android.arch.persistence.room.Room;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.amandariu.tagger.ITag;
 import com.amandariu.tagger.demo.TaggerApplication;
-import com.amandariu.tagger.demo.data.Tag;
 import com.amandariu.tagger.demo.data.source.ITagsDataSource;
 import com.amandariu.tagger.demo.data.source.local.db.TagConverter;
 import com.amandariu.tagger.demo.data.source.local.db.TagDatabase;
@@ -51,7 +51,7 @@ public class TagsLocalDataSource implements ITagsDataSource {
      * @param tags The list of tags to write to the database.
      * @param callback The callback to notify of result.
      */
-    public void saveTags(@NonNull final List<Tag> tags,
+    public void saveTags(@NonNull final List<? extends ITag> tags,
                          @NonNull final ISaveTagsCallback callback) {
         Log.d(TAG, "Processing request to save ["
                 + (tags == null ? "null" : tags.size()) + "] tags to the db");

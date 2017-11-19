@@ -3,6 +3,7 @@ package com.amandariu.tagger.demo.data.source.remote;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.amandariu.tagger.ITag;
 import com.amandariu.tagger.demo.R;
 import com.amandariu.tagger.demo.TaggerApplication;
 import com.amandariu.tagger.demo.data.Tag;
@@ -126,7 +127,7 @@ public class TagsRemoteDataSource implements ITagsDataSource {
     }
 
     @Override
-    public void saveTags(@NonNull List<Tag> tags, @NonNull ISaveTagsCallback callback) {
+    public void saveTags(@NonNull List<? extends ITag> tags, @NonNull ISaveTagsCallback callback) {
         // do nothing
     }
 

@@ -28,7 +28,7 @@ public class TagChipView extends LinearLayout {
     }
 
 
-    private Tag mTag;
+    private ITag mTag;
     private TextView mTxtLabel;
     private ImageView mBtnDelete;
 
@@ -72,7 +72,6 @@ public class TagChipView extends LinearLayout {
             setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d("AMANDA-TEST", "onClick: Delete clicked for view: " + v);
                     if (mListener != null) {
                         mListener.onTagClosed(TagChipView.this);
                     }
@@ -82,12 +81,7 @@ public class TagChipView extends LinearLayout {
     }
 
 
-    public void setChipTag(ITag otag) {
-        setChipTag(new Tag(otag));
-    }
-
-
-    public void setChipTag(Tag tag) {
+    public void setChipTag(ITag tag) {
         mTag = tag;
         mTxtLabel.setText(mTag.getLabel());
         if (mTag.getColorInt() != -1) {
@@ -101,7 +95,7 @@ public class TagChipView extends LinearLayout {
     }
 
     @Nullable
-    public Tag getChipTag() {
+    public ITag getChipTag() {
         return mTag;
     }
 
