@@ -1,7 +1,6 @@
 package com.amandariu.tagger;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +11,7 @@ import com.amandariu.tagger.TagListFragment.TagListFragmentListener;
 import java.util.List;
 
 /**
- * {@link RecyclerView.Adapter} that can display a list of {@link Tag}s and makes a call to the
+ * {@link RecyclerView.Adapter} that can display a list of {@link ITag}s and makes a call to the
  * specified {@link TagListFragmentListener} when a tag selection is toggled on or off.
  */
 public class TagsListAdapter extends RecyclerView.Adapter<TagsListAdapter.ViewHolder> {
