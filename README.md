@@ -73,7 +73,7 @@ The demo app is split into two sections.
 
 ![Tagger Portrait Screenshot](screenshots/tagger_portrait.png "Screenshot of the Tag Selector in portrait mode")
 
-![Tagger Portrait Screenshot](screenshots/tagger_portrait.png "Screenshot of the Tag Selector in landscape mode")
+![Tagger Landscape Screenshot](screenshots/tagger_landscape.png "Screenshot of the Tag Selector in landscape mode")
 
 
   [1]: https://github.com/xiaofeng-han/AndroidLibs/tree/master/flowlayoutmanager
