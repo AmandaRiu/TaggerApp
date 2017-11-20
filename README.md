@@ -22,7 +22,7 @@ The Tagger library includes the following features:
 
 ### Considerations
 
- - **Minimum SDK**: I chose to set the minimum SDK to 16 to match the minimum SDK of the current HelpScout Android App in the Google Play Store. 
+ - **Minimum SDK**: I chose to set the minimum SDK to 16 to match the minimum SDK of the current Android App in the Google Play Store. 
  - **Duplicate tags**: Since each tag has an ID and color associated with it, I did not remove any tags with duplicate tag labels. If I were designing this to not allow duplicates, I would've set the tag label as the primary key in the database and used the database to dedupe the list before sending the results. 
  - **Tests**: Due to time constraints I did not write as many tests as I would've liked. I recently took on a full-time+ project that has been eating up most of my free time and I didn't want to hold up your hiring process. If you would like me to go back in and add some more tests please let me know. 
  - **Language**: I wrote this codelab in Java only because I'm still learning **Kotlin**. That other full-time project I've been working on is 100% Kotlin so I'm learning fast and getting my feet wet. If you would like me to convert this project to Kotlin, please let me know. 
