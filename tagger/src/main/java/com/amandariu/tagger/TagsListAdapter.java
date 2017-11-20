@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.amandariu.tagger.TagListFragment.TagListFragmentListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -47,6 +48,7 @@ public class TagsListAdapter extends RecyclerView.Adapter<TagsListAdapter.ViewHo
     TagsListAdapter(@NonNull List<ITag> availTags,
                            @NonNull List<ITag> selectedTags,
                            @Nullable TagListFragmentListener listener) {
+        Collections.sort(availTags);
         mAvailableTags = availTags;
         mFilteredAvailableTags = availTags;
         mSelectedTags = selectedTags;
