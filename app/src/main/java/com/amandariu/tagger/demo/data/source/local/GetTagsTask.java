@@ -15,8 +15,9 @@ import java.util.concurrent.TimeUnit;
 import static com.amandariu.tagger.demo.data.source.ISourceBase.ILoadTagsCallback;
 
 /**
- * todo replace with a single threaded executor for accessing the database.
- * @author amandariu (11/12/17)
+ * Fetches tags from the Tag Database.
+ *
+ * @author Amanda Riu
  */
 public class GetTagsTask extends AsyncTask<Void, Void, List<TagEntity>> {
 
