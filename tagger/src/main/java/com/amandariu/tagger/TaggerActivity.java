@@ -1,12 +1,15 @@
 package com.amandariu.tagger;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -14,9 +17,30 @@ import android.view.MenuItem;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * Main Activity for displaying two views:
+ * <ul>
+ *     <li>Selected Tags - displays each selected tag as a {@link TagChipView}</li>
+ *     <li>Available Tags - A list of all available tags.</li>
+ * </ul>
+ * There are two layout configurations for this Activity:
+ * <ul>
+ *     <li>portrait - Stacks the Selected and Available Tags Views on top of each other.</li>
+ *     <li>landscape - Displays the Selected and Available Tags Views side-by-side.</li>
+ * </ul>
+ *
+ * To ensure this class is properly instantiated, use {@link #createIntent(Context, List, List)}.
+ * Example:
+ * <code>
+ *     Intent intent = TaggerActivity.createIntent(this, mAvailableTags, mSelectedTags);
+ *     startActivityForResult(intent, TaggerActivity.REQUEST_CODE);
+ * </code>
+ * @author Amanda Riu
+ */
 public class TaggerActivity extends AppCompatActivity implements
-        TagListFragment.TagListFragmentListener, TagChipsFragment.TagChipsFragmentListener {
+        TagListFragment.TagListFragmentListener,
+        TagChipsFragment.TagChipsFragmentListener,
+        SearchView.OnQueryTextListener {
 
     public static final String ARG_SELECTED_TAGS = "com.amandariu.tagger.SELECTED-TAGS";
     public static final String ARG_AVAILABLE_TAGS = "com.amandariu.tagger.AVAILABLE-TAGS";
@@ -26,7 +50,17 @@ public class TaggerActivity extends AppCompatActivity implements
 
     private TagChipsFragment mChipsFragment;
     private TagListFragment mListFragment;
+    private boolean mHasChanges = false;
 
+    /**
+     * Creates an intent for launching this activity. Using this method ensures the
+     * intent is properly initialized with the available and selected tags.
+     *
+     * @param context The context of the calling Activity.
+     * @param availTags The list of available {@link ITag}s. Cannot be null.
+     * @param selectedTags The list of selected {@link ITag}s. Can be null.
+     * @return The intent to use for launching this activity.
+     */
     public static Intent createIntent(@NonNull Context context,
                                       @NonNull List<? extends ITag> availTags,
                                       @Nullable List<? extends ITag> selectedTags) {
@@ -42,16 +76,23 @@ public class TaggerActivity extends AppCompatActivity implements
         return intent;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tagger);
 
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
         if (savedInstanceState == null) {
             if (getIntent().getBundleExtra(ARG_TAG_EXTRAS) == null) {
                 throw new IllegalArgumentException("Tagger requires a list of available Tags to" +
-                        " work properly. Please use TaggerActivity.createIntent(...) method to ensure" +
-                        " all required data is provided.");
+                        " work properly. Please use TaggerActivity.createIntent(...) method to" +
+                        " ensure all required data is provided.");
             }
             Bundle extras = getIntent().getBundleExtra(ARG_TAG_EXTRAS);
             //
@@ -85,14 +126,14 @@ public class TaggerActivity extends AppCompatActivity implements
             mChipsFragment = TagChipsFragment.newInstance(selectedTags);
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.fragment_tagChips, mChipsFragment, mChipsFragment.TAG)
+                    .replace(R.id.fragment_tagChips, mChipsFragment, TagChipsFragment.TAG)
                     .commit();
             //
             // Available Tags List view
             mListFragment = TagListFragment.newInstance(availableTags, selectedTags);
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.fragment_tagList, mListFragment, mListFragment.TAG)
+                    .replace(R.id.fragment_tagList, mListFragment, TagListFragment.TAG)
                     .commit();
 
         } else {
@@ -103,25 +144,77 @@ public class TaggerActivity extends AppCompatActivity implements
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.tagger_menu, menu);
+
+        final MenuItem searchItem = menu.findItem(R.id.action_search);
+        final SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setOnQueryTextListener(this);
+
         return true;
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.close) {
+        if (item.getItemId() == R.id.action_close) {
             saveAndClose();
+            return true;
+        } else if (item.getItemId() == android.R.id.home) {
+            verifyCancel();
             return true;
         } else {
             return super.onOptionsItemSelected(item);
         }
     }
 
+    /**
+     * If the user has pending changes, then display a confirmation dialog advising the user
+     * that all changes will be lost. If no changes, just cancel and return to the
+     * calling activity.
+     */
+    private void verifyCancel() {
+        if (mHasChanges) {
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.tagger_confirm)
+                    .setMessage(R.string.tagger_confirm_cancel_msg)
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                            cancelAndClose();
+                        }
+                    })
+                    .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    })
+                    .create().show();
+        } else {
+            cancelAndClose();
+        }
+    }
 
+    /**
+     * Cancels this activity without making any changes.
+     */
+    private void cancelAndClose() {
+        setResult(RESULT_CANCELED);
+        finish();
+    }
+
+    /**
+     * Grab a list of selected tags and return to the calling Activity.
+     */
     private void saveAndClose() {
         List<ITag> selectedTags = mChipsFragment.getSelectedTags();
         Intent data = new Intent();
@@ -138,6 +231,7 @@ public class TaggerActivity extends AppCompatActivity implements
      */
     @Override
     public void onTagChipClosed(ITag tag) {
+        mHasChanges = true;
         if (mListFragment != null) {
             mListFragment.deselectTag(tag);
         }
@@ -152,6 +246,7 @@ public class TaggerActivity extends AppCompatActivity implements
      */
     @Override
     public void onTagSelected(ITag tag) {
+        mHasChanges = true;
         if (mChipsFragment != null) {
             mChipsFragment.addTag(tag);
         }
@@ -163,10 +258,34 @@ public class TaggerActivity extends AppCompatActivity implements
      */
     @Override
     public void onTagDeselected(ITag tag) {
+        mHasChanges = true;
         if (mChipsFragment != null) {
             mChipsFragment.removeTag(tag);
         }
     }
+    //endregion
 
+    //region Search
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        if (mChipsFragment != null) {
+            mChipsFragment.onQueryTextChange(newText);
+        }
+        if (mListFragment != null) {
+            mListFragment.onQueryTextChange(newText);
+        }
+        return true;
+    }
     //endregion
 }

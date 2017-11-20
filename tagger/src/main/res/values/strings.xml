@@ -1,6 +1,12 @@
 <resources>
+    <string name="app_tagger_name">Tagger</string>
     <string name="activity_name">Add Tags</string>
     <string name="selected_tags">Selected Tags:</string>
     <string name="available_tags">Available Tags:</string>
+    <string name="tagger_search">Search</string>
+    <string name="tagger_search_hint">Search for a tag by label</string>
+    <string name="tagger_save">SAVE</string>
+    <string name="tagger_confirm_cancel_msg">Exiting without pressing save will result in all changes being lost. Continue?</string>
+    <string name="tagger_confirm">Confirm</string>
     <bool name="is_tablet" translatable="false">false</bool>
 </resources>
