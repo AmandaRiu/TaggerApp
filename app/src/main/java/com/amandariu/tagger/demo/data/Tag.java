@@ -41,7 +41,7 @@ public class Tag extends ITag implements Parcelable {
         this.mColor = color;
     }
 
-    public Tag(Parcel in) {
+    private Tag(Parcel in) {
         mId = in.readInt();
         mLabel = in.readString();
         mColor = in.readString();

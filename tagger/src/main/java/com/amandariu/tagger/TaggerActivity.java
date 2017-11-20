@@ -45,10 +45,10 @@ public class TaggerActivity extends AppCompatActivity implements
 
     public static final String ARG_SELECTED_TAGS = "com.amandariu.tagger.SELECTED-TAGS";
     public static final String ARG_AVAILABLE_TAGS = "com.amandariu.tagger.AVAILABLE-TAGS";
-    public static String ARG_TAG_EXTRAS = "com.amandariu.tagger.TAG-EXTRAS";
+    public static final String ARG_TAG_EXTRAS = "com.amandariu.tagger.TAG-EXTRAS";
     private static final String ARG_SEARCH_QUERY_STRING = "com.amandariu.tagger.SEARCH-QUERY-STRING";
 
-    public static int REQUEST_CODE = 1000;
+    public static final int REQUEST_CODE = 1000;
 
     private TagChipsFragment mChipsFragment;
     private TagListFragment mListFragment;

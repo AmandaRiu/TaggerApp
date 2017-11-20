@@ -21,7 +21,7 @@ public abstract class NetworkUtils {
         ConnectivityManager mgr;
         Context context = TaggerApplication.getInstance().getApplicationContext();
         mgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = mgr.getActiveNetworkInfo();
+        NetworkInfo networkInfo = mgr != null ? mgr.getActiveNetworkInfo() : null;
         return networkInfo != null
                 && networkInfo.isAvailable()
                 && networkInfo.isConnected();

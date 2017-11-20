@@ -3,7 +3,6 @@ package com.amandariu.tagger;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +11,6 @@ import android.widget.Filterable;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -32,7 +30,7 @@ public class TagChipsAdapter extends RecyclerView.Adapter<TagChipsAdapter.ViewHo
         implements Filterable {
 
     private final List<ITag> mSelectedTags;
-    private TagChipView.TagChipListener mTagChipListener;
+    private final TagChipView.TagChipListener mTagChipListener;
     //
     // Filtering
     private List<ITag> mFilteredSelectedTags;
@@ -45,6 +43,7 @@ public class TagChipsAdapter extends RecyclerView.Adapter<TagChipsAdapter.ViewHo
      * @param listener The listener to notify when the user closes a tag to deselect it.
      */
     TagChipsAdapter(@NonNull List<ITag> tags, @Nullable TagChipView.TagChipListener listener) {
+        //noinspection unchecked
         Collections.sort(tags);
         mSelectedTags = tags;
         mFilteredSelectedTags = tags;
@@ -207,7 +206,7 @@ public class TagChipsAdapter extends RecyclerView.Adapter<TagChipsAdapter.ViewHo
 
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        TagChipView view;
+        final TagChipView view;
 
         ViewHolder(View v) {
             super(v);

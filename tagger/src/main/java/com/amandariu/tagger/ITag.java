@@ -27,10 +27,7 @@ public abstract class ITag implements Parcelable, Comparable {
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof ITag)) return false;
-        if (((ITag) obj).getId() == getId()) {
-            return true;
-        }
-        return false;
+        return ((ITag) obj).getId() == getId();
     }
 
     /**

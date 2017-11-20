@@ -29,13 +29,13 @@ public class TagsRepository implements ITagRepository {
     /**
      * This variable has package local visibility so it can be accessed from tests.
      */
-    List<ITag> mCachedTags;
+    private List<ITag> mCachedTags;
 
     /**
      * Marks the cache as invalid, to force an update the next time data is requested. This
      * variable has package local visibility so it can be accessed from tests.
      */
-    boolean mCacheIsDirty = false;
+    private boolean mCacheIsDirty = false;
 
     /**
      * Singleton class. Prevent remote instantiation.
@@ -194,9 +194,7 @@ public class TagsRepository implements ITagRepository {
             mCachedTags = new ArrayList<>();
         }
         mCachedTags.clear();
-        for (ITag tag : tags) {
-            mCachedTags.add(tag);
-        }
+        mCachedTags.addAll(tags);
         mCacheIsDirty = false;
     }
 

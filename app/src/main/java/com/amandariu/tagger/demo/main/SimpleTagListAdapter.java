@@ -27,9 +27,7 @@ public class SimpleTagListAdapter extends RecyclerView.Adapter<SimpleTagListAdap
 
     public void setTags(@NonNull List<? extends ITag> tags) {
         mTags.clear();
-        for (ITag t : tags) {
-            mTags.add(t);
-        }
+        mTags.addAll(tags);
         notifyDataSetChanged();
     }
 
@@ -63,8 +61,8 @@ public class SimpleTagListAdapter extends RecyclerView.Adapter<SimpleTagListAdap
     }
 
     static class TagViewHolder extends RecyclerView.ViewHolder {
-        public TextView rowNumber;
-        public TextView tagName;
+        public final TextView rowNumber;
+        public final TextView tagName;
 
         public TagViewHolder(View itemView) {
             super(itemView);

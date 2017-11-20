@@ -57,7 +57,7 @@ public class TagsRemoteDataSource implements ITagsDataSource {
         clientBuilder.readTimeout(60, TimeUnit.SECONDS);
         clientBuilder.addNetworkInterceptor(new Interceptor() {
             @Override
-            public okhttp3.Response intercept(Chain chain) throws IOException {
+            public okhttp3.Response intercept(@NonNull Chain chain) throws IOException {
                 Request originalRequest = chain.request();
                 Request newRequest;
                 HttpUrl originalHttpUrl = originalRequest.url();
@@ -99,13 +99,14 @@ public class TagsRemoteDataSource implements ITagsDataSource {
         Call<List<Tag>> call = mApi.getTags();
         call.enqueue(new Callback<List<Tag>>() {
             @Override
-            public void onResponse(Call<List<Tag>> call, Response<List<Tag>> response) {
+            public void onResponse(@NonNull Call<List<Tag>> call, @NonNull Response<List<Tag>> response) {
                 if (response.isSuccessful()) {
                     List<Tag> tags = response.body();
                     callback.onTagsLoaded(tags);
                 } else {
                     Log.e(TAG, "Error getting tags from remote API: " + response.errorBody());
                     try {
+                        @SuppressWarnings("ConstantConditions")
                         final String msg = response.errorBody().string();
                         callback.onDataNotAvailable(msg);
                     } catch (IOException io) {
@@ -119,7 +120,7 @@ public class TagsRemoteDataSource implements ITagsDataSource {
             }
 
             @Override
-            public void onFailure(Call<List<Tag>> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<Tag>> call, @NonNull Throwable t) {
                 Log.e(TAG, "Error getting tags from remote API: " + t.getMessage());
                 callback.onDataNotAvailable(t.getLocalizedMessage());
             }

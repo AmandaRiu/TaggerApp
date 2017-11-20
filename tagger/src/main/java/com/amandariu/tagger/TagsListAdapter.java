@@ -48,6 +48,7 @@ public class TagsListAdapter extends RecyclerView.Adapter<TagsListAdapter.ViewHo
     TagsListAdapter(@NonNull List<ITag> availTags,
                            @NonNull List<ITag> selectedTags,
                            @Nullable TagListFragmentListener listener) {
+        //noinspection unchecked
         Collections.sort(availTags);
         mAvailableTags = availTags;
         mFilteredAvailableTags = availTags;
@@ -220,8 +221,8 @@ public class TagsListAdapter extends RecyclerView.Adapter<TagsListAdapter.ViewHo
     class ViewHolder extends RecyclerView.ViewHolder {
         final View mView;
         ITag mTag;
-        TextView mTxtLabel;
-        ImageView mImgSelected;
+        final TextView mTxtLabel;
+        final ImageView mImgSelected;
 
         ViewHolder(View view) {
             super(view);

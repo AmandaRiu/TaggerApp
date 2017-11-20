@@ -35,6 +35,7 @@ public abstract class HttpUtils {
             throw new AssertionError();
         }
 
+        //noinspection deprecation
         return new OkHttpClient.Builder()
                 .sslSocketFactory(sslContext.getSocketFactory());
     }
@@ -44,7 +45,7 @@ public abstract class HttpUtils {
      * in production.
      * @return A TrustManager that accepts all certificates
      */
-    public static TrustManager[] getTrustAllCertsManagerArray() {
+    private static TrustManager[] getTrustAllCertsManagerArray() {
 
         return new TrustManager[] { new X509TrustManager() {
             @Override

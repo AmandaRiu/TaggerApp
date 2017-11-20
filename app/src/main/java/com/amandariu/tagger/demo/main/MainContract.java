@@ -17,7 +17,7 @@ import java.util.List;
  *
  * @author Amanda Riu
  */
-public interface MainContract {
+interface MainContract {
 
     //region View
     interface View extends IBaseView<Presenter> {

@@ -19,14 +19,14 @@ import static com.amandariu.tagger.demo.data.source.ISourceBase.ILoadTagsCallbac
  *
  * @author Amanda Riu
  */
-public class GetTagsTask extends AsyncTask<Void, Void, List<TagEntity>> {
+class GetTagsTask extends AsyncTask<Void, Void, List<TagEntity>> {
 
     private static final String TAG = GetTagsTask.class.getSimpleName();
 
-    private ILoadTagsCallback mCallback;
-    private TagDatabase mDb;
+    private final ILoadTagsCallback mCallback;
+    private final TagDatabase mDb;
 
-    public GetTagsTask(@NonNull TagDatabase db, @NonNull final ILoadTagsCallback callback) {
+    GetTagsTask(@NonNull TagDatabase db, @NonNull final ILoadTagsCallback callback) {
         this.mCallback = callback;
         this.mDb = db;
     }

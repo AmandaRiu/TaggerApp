@@ -7,7 +7,7 @@ import android.support.annotation.NonNull;
 /**
  * @author amandariu (11/18/17)
  */
-public final class TagUtils {
+final class TagUtils {
     private TagUtils() throws InstantiationException {
         throw new InstantiationException("Utility class only!");
     }

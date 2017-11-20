@@ -18,7 +18,7 @@ import static com.amandariu.tagger.demo.data.source.ITagsDataSource.ISaveTagsCal
  *
  * @author Amanda Riu
  */
-public class SaveTagsTask extends AsyncTask<Void, Void, Void> {
+class SaveTagsTask extends AsyncTask<Void, Void, Void> {
 
     private final String TAG = SaveTagsTask.class.getSimpleName();
 

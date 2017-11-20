@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         //
         // Save available tags
         final List<ITag> availableTags = mAvailableTagsAdapter.getTags();
-        if (availableTags != null && availableTags.size() > 0) {
+        if (availableTags.size() > 0) {
             outState.putParcelableArray(
                     TaggerActivity.ARG_AVAILABLE_TAGS,
                     availableTags.toArray(new ITag[availableTags.size()]));

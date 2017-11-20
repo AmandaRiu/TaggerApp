@@ -5,7 +5,6 @@ import android.content.res.TypedArray;
 import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,8 +28,8 @@ public class TagChipView extends LinearLayout {
 
 
     private ITag mTag;
-    private TextView mTxtLabel;
-    private ImageView mBtnDelete;
+    private final TextView mTxtLabel;
+    private final ImageView mBtnDelete;
 
     private TagChipListener mListener = null;
 

@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * This class can then be used to wrap up operations that while in progress should block tests from
  * accessing the UI.
  */
-public class SimpleCountingIdlingResource implements IdlingResource {
+class SimpleCountingIdlingResource implements IdlingResource {
 
     private final String mResourceName;
     private final AtomicInteger mCounter = new AtomicInteger(0);
@@ -60,7 +60,6 @@ public class SimpleCountingIdlingResource implements IdlingResource {
      * You only need to call this upon transition from busy to idle - if the resource is already idle
      * when the method is called invoking the call back is optional and has no significant impact.
      *
-     * @param callback
      */
     @Override
     public void registerIdleTransitionCallback(ResourceCallback callback) {
