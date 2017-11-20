@@ -1,7 +1,7 @@
 
 # Tagger Demo App
 
-#### Overview
+### Overview
 
 A demo application for playing with the custom Tagger library. Tagger allows for plug-n-play tag selection.
 
