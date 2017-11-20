@@ -3,6 +3,8 @@
 
 ### Overview
 
+![Video Gif](screenshots/video.gif "How it all works")
+
 A demo application for playing with the custom Tagger library. Tagger allows for plug-n-play tag selection.
 
 The Tagger library includes the following features:
@@ -74,8 +76,6 @@ The demo app is split into two sections.
 
 ![Tagger Portrait Screenshot](screenshots/tagger_portrait.png "Screenshot of the Tag Selector in landscape mode")
 
-# Video
-![Video Gif](screenshots/video.gif "How it all works")
 
   [1]: https://github.com/xiaofeng-han/AndroidLibs/tree/master/flowlayoutmanager
   [2]: https://material.io/guidelines/components/chips.html
