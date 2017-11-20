@@ -33,6 +33,16 @@ public class SimpleTagListAdapter extends RecyclerView.Adapter<SimpleTagListAdap
         notifyDataSetChanged();
     }
 
+    public void clearTags() {
+        mTags.clear();
+        notifyDataSetChanged();
+    }
+
+    @NonNull
+    public List<ITag> getTags() {
+        return mTags;
+    }
+
     @Override
     public TagViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())

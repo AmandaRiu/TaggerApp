@@ -2,6 +2,7 @@ package com.amandariu.tagger.demo.main;
 
 
 import android.app.Activity;
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -80,7 +81,7 @@ public interface MainContract {
         /**
          * Explicitly fetch tags from the remote api.
          */
-        void loadTagsFromRemote();
+        void loadTagsFromRemote(@NonNull Context ctx);
 
         /**
          * Open the custom Tag selector.

@@ -3,6 +3,7 @@ package com.amandariu.tagger;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,8 @@ import android.widget.Filter;
 import android.widget.Filterable;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -42,6 +45,7 @@ public class TagChipsAdapter extends RecyclerView.Adapter<TagChipsAdapter.ViewHo
      * @param listener The listener to notify when the user closes a tag to deselect it.
      */
     TagChipsAdapter(@NonNull List<ITag> tags, @Nullable TagChipView.TagChipListener listener) {
+        Collections.sort(tags);
         mSelectedTags = tags;
         mFilteredSelectedTags = tags;
         mTagChipListener = listener;
@@ -53,16 +57,34 @@ public class TagChipsAdapter extends RecyclerView.Adapter<TagChipsAdapter.ViewHo
      * @param tag The tag to add to the selected tags.
      */
     public void add(@NonNull ITag tag) {
-        mSelectedTags.add(tag);
+        int pos = getAlphabeticalPos(mSelectedTags, tag);
+        mSelectedTags.add(pos, tag);
 
         if (mFilterEnabled) {
-            int pos = mFilteredSelectedTags.size();
-            mFilteredSelectedTags.add(pos, tag);
-            notifyItemRangeInserted(pos, 1);
+            int filterPos = getAlphabeticalPos(mFilteredSelectedTags, tag);
+            mFilteredSelectedTags.add(filterPos, tag);
+            notifyItemRangeInserted(filterPos, 1);
         } else {
-            notifyItemRangeInserted(mSelectedTags.size()-1, 1);
+            notifyItemRangeInserted(pos, 1);
         }
     }
+
+    /**
+     * Get the position to insert the tag so the list of selected tags will continue
+     * to be in alphabetical order.
+     * @param taglist The list to evaluate.
+     * @param tag The tag to find a position for.
+     * @return The position the tag should be inserted.
+     */
+    private int getAlphabeticalPos(@NonNull List<ITag> taglist, @NonNull ITag tag) {
+        for (int i = 0; i < taglist.size(); i++) {
+            if (taglist.get(i).compareTo(tag) > 0) {
+                return i;
+            }
+        }
+        return taglist.size();
+    }
+
 
     /**
      * Remove a tag from the list of selected tags. This will remove the {@link TagChipView}

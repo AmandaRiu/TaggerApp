@@ -1,13 +1,18 @@
 package com.amandariu.tagger.demo.main;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.amandariu.tagger.ITag;
 import com.amandariu.tagger.TaggerActivity;
+import com.amandariu.tagger.demo.R;
+import com.amandariu.tagger.demo.common.NetworkUtils;
 import com.amandariu.tagger.demo.data.source.ISourceBase;
 import com.amandariu.tagger.demo.data.source.ITagRepository;
 import com.amandariu.tagger.demo.data.source.ITagsDataSource;
@@ -164,7 +169,10 @@ public class MainPresenter implements MainContract.Presenter {
      * Explicitly fetch tags from the remote api
      */
     @Override
-    public void loadTagsFromRemote() {
+    public void loadTagsFromRemote(@NonNull Context ctx) {
+        if (!NetworkUtils.isNetworkConnected()) {
+            mView.showError(ctx.getString(R.string.error_no_internet));
+        }
         //
         // Testing Only:
         // The network request would be handled on a different thread so make sure

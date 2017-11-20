@@ -7,7 +7,9 @@ import android.net.NetworkInfo;
 import com.amandariu.tagger.demo.TaggerApplication;
 
 /**
- * @author amandariu (11/12/17)
+ * Miscellaneous network utilities.
+ *
+ * @author Amanda Riu
  */
 public abstract class NetworkUtils {
 

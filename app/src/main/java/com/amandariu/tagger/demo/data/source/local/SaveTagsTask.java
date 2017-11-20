@@ -14,7 +14,9 @@ import java.util.concurrent.TimeUnit;
 import static com.amandariu.tagger.demo.data.source.ITagsDataSource.ISaveTagsCallback;
 
 /**
- * @author amandariu (11/12/17)
+ * Save tags to the database for offline use.
+ *
+ * @author Amanda Riu
  */
 public class SaveTagsTask extends AsyncTask<Void, Void, Void> {
 

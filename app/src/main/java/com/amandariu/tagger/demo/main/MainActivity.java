@@ -39,10 +39,6 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     private ViewGroup mViewLoading = null;
     private TextView mNoAvailableTags;
     private TextView mNoSelectedTags;
-    //
-    // State
-    private List<? extends ITag> mAvailableTags = new ArrayList<>();
-    private List<ITag> mSelectedTags = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +49,10 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         new MainPresenter(Injection.provideTagsRepository(getApplicationContext()), this);
         //
         // Initialize View Components
+        //
+        // Get Tags from the best available option
+        Button btnGetTags = findViewById(R.id.btn_loadTags);
+        btnGetTags.setOnClickListener(this);
         //
         // Get Tags from API
         Button btnGetApi = findViewById(R.id.btn_api);
@@ -72,13 +72,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         mAvailableTagsAdapter = new SimpleTagListAdapter(new ArrayList<ITag>());
         availList.setAdapter(mAvailableTagsAdapter);
         Button clearAvailableTags = findViewById(R.id.btn_clearAvailableTags);
-        clearAvailableTags.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mAvailableTags.clear();
-                setAvailableTags(mAvailableTags);
-            }
-        });
+        clearAvailableTags.setOnClickListener(this);
         //
         // Display Selected Tags
         mNoSelectedTags = findViewById(R.id.txt_noSelectedTags);
@@ -86,13 +80,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         mSelectedTagsAdapter = new SimpleTagListAdapter(new ArrayList<ITag>());
         selectList.setAdapter(mSelectedTagsAdapter);
         Button clearSelectedTags = findViewById(R.id.btn_clearSelectedTags);
-        clearSelectedTags.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mSelectedTags.clear();
-                setSelectedTags(mSelectedTags);
-            }
-        });
+        clearSelectedTags.setOnClickListener(this);
         //
         // Loading indicator
         mViewLoading = findViewById(R.id.view_loading);
@@ -100,14 +88,14 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         if (savedInstanceState != null) {
             //
             // Restore any selected tags saved during configuration change.
+            final List<ITag> selectedTags = new ArrayList<>();
             Parcelable[] pSelTags = savedInstanceState
                     .getParcelableArray(TaggerActivity.ARG_SELECTED_TAGS);
             if (pSelTags != null && pSelTags.length > 0) {
-                mSelectedTags.clear();
                 for (Parcelable t : pSelTags) {
-                    mSelectedTags.add((ITag)t);
+                    selectedTags.add((ITag)t);
                 }
-                setSelectedTags(mSelectedTags);
+                setSelectedTags(selectedTags);
             }
             //
             // Restore available tags saved during configuration change
@@ -127,17 +115,19 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     protected void onSaveInstanceState(Bundle outState) {
         //
         // Save selected tags
-        if (mSelectedTags.size() > 0) {
+        final List<ITag> selectedTags = mSelectedTagsAdapter.getTags();
+        if (selectedTags.size() > 0) {
             outState.putParcelableArray(
                     TaggerActivity.ARG_SELECTED_TAGS,
-                    mSelectedTags.toArray(new ITag[mSelectedTags.size()]));
+                    selectedTags.toArray(new ITag[selectedTags.size()]));
         }
         //
         // Save available tags
-        if (mAvailableTags != null && mAvailableTags.size() > 0) {
+        final List<ITag> availableTags = mAvailableTagsAdapter.getTags();
+        if (availableTags != null && availableTags.size() > 0) {
             outState.putParcelableArray(
                     TaggerActivity.ARG_AVAILABLE_TAGS,
-                    mAvailableTags.toArray(new ITag[mAvailableTags.size()]));
+                    availableTags.toArray(new ITag[availableTags.size()]));
         }
         super.onSaveInstanceState(outState);
     }
@@ -153,8 +143,6 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     protected void onDestroy() {
         mPresenter.destroyView();
         mViewLoading = null;
-        mSelectedTags = null;
-        mAvailableTags = null;
         mAvailableTagsAdapter = null;
         mNoSelectedTags = null;
         mNoAvailableTags = null;
@@ -198,7 +186,6 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         } else {
             showNoAvailableTags(true);
         }
-        mAvailableTags = tags;
     }
 
     /**
@@ -228,6 +215,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     @Override
     public void showNoAvailableTags(boolean on) {
         if (on) {
+            mAvailableTagsAdapter.clearTags();
             mNoAvailableTags.setVisibility(View.VISIBLE);
         } else {
             mNoAvailableTags.setVisibility(View.GONE);
@@ -272,23 +260,37 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.btn_loadTags:
+                showNoAvailableTags(true);
+                mPresenter.loadTags(false);
+                break;
             case R.id.btn_api:
                 showNoAvailableTags(true);
-                mPresenter.loadTagsFromRemote();
+                mPresenter.loadTagsFromRemote(MainActivity.this);
                 break;
             case R.id.btn_database:
                 showNoAvailableTags(true);
                 mPresenter.loadTagsFromLocal();
                 break;
             case R.id.btn_selectTags:
-                if (mAvailableTags != null && mAvailableTags.size() > 0) {
-                    mPresenter.selectTags(this, mAvailableTags, mSelectedTags);
+                final List<ITag> availableTags = mAvailableTagsAdapter.getTags();
+                final List<ITag> selectedTags = mSelectedTagsAdapter.getTags();
+                if (availableTags.size() > 0) {
+                    mPresenter.selectTags(this, availableTags, selectedTags);
                 } else {
                     Toast.makeText(
                             this,
                             R.string.no_tags_loaded,
-                            Toast.LENGTH_SHORT).show();
+                            Toast.LENGTH_LONG).show();
                 }
+                break;
+            case R.id.btn_clearAvailableTags:
+                mAvailableTagsAdapter.clearTags();
+                showNoAvailableTags(true);
+                break;
+            case R.id.btn_clearSelectedTags:
+                mSelectedTagsAdapter.clearTags();
+                showNoSelectedTags(true);
                 break;
             default:
                 Log.e(TAG, "Unknown view sent to onClick handler!");
@@ -312,13 +314,13 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
             if (resultCode == RESULT_OK) {
                 Parcelable[] pSelTags
                         = data.getParcelableArrayExtra(TaggerActivity.ARG_SELECTED_TAGS);
-                mSelectedTags.clear();
                 if (pSelTags != null && pSelTags.length > 0) {
+                    final List<ITag> selectedTags = new ArrayList<>();
                     for (Parcelable p : pSelTags) {
-                        mSelectedTags.add((ITag)p);
+                        selectedTags.add((ITag)p);
                     }
+                    setSelectedTags(selectedTags);
                 }
-                setSelectedTags(mSelectedTags);
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
