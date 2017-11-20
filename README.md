@@ -1,7 +1,6 @@
 
 # Tagger Demo App
 
-----------
 #### Overview
 
 A demo application for playing with the custom Tagger library. Tagger allows for plug-n-play tag selection.
@@ -31,18 +30,16 @@ The Tagger library includes the following features:
  - **Background Processing**: I chose to use AsyncTask for background processing for simplicity. For larger apps I would've either used RxJava, or managed thread pools. 
  - **Tagger Library**: This is the custom Tag Selector library. It's only responsibility is to take a list of available tags and selected tags, display views for working with these lists, and returning the results. I chose not to add the data layer to this library so it could remain flexible. 
 
-----------
 
-#### Architecture
+### Architecture
 
  - **Database**: Room + Sqlite
  - **Network**: Retrofit + LoganSquare
  - **MVP**: Used the MVP pattern for the main demo app. 
  - **Retrieving and caching data**: The current design will fetch a fresh set of tags from the network, save them to the database, and keep a cached copy for the remainder of the session. The only time the app will automatically retrieve tags from the database is if there is no network connection. Clicking **Auto** in the demo app will test this logic. If the app is not connected to the Internet, it will load from the database. 
 
-----------
 
-#### Demo App Instructions
+### Demo App Instructions
 The demo app is split into two sections. 
 
  - **Load Tags From**: This section tests the network, db, and caching logic and loads the **Available Tags** 
@@ -60,7 +57,7 @@ The demo app is split into two sections.
 	 - **Clear**: Clears the selected tags. 
 	 - **Selected Tags List**: A simple list that displays all the selected tags. Note the left hand column is the row number. 
 
-#### Building
+### Building
 
 1. Clone the git repository
 2. Run `./gradlew build`	
