@@ -9,11 +9,13 @@
         android:id="@+id/txt_selectedTagsLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/selected_tags"/>
+        android:text="@string/selected_tags"
+        style="@style/TaggerLabel"/>
 
     <com.amandariu.tagger.TagChipsLayout
         android:id="@+id/tagChipsLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        style="@style/TaggerFragmentLayout"/>
 
 </LinearLayout>

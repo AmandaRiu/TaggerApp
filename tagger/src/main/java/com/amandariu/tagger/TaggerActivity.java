@@ -70,6 +70,9 @@ public class TaggerActivity extends AppCompatActivity implements
     public static Intent createIntent(@NonNull Context context,
                                       @NonNull List<? extends ITag> availTags,
                                       @Nullable List<? extends ITag> selectedTags) {
+        if (availTags == null) {
+            throw new IllegalArgumentException("Available tags must not be null!");
+        }
         Intent intent = new Intent(context, TaggerActivity.class);
         Bundle extras = new Bundle();
         extras.putParcelableArray(

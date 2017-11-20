@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Label: Load Tags From -->
+    <TextView
+        android:id="@+id/textView"
+        style="@style/MainLabelFont.Bold"
+        android:text="@string/lbl_load_tags_from"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Button: Load tags from API -->
+    <Button
+        android:id="@+id/btn_api"
+        style="@style/MainButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        android:layout_marginRight="4dp"
+        android:text="@string/api"
+        android:textAllCaps="false"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <!-- Button: Load tags from Database -->
+    <Button
+        android:id="@+id/btn_database"
+        style="@style/MainButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:layout_marginStart="4dp"
+        android:text="@string/database"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <!-- Label: Available Tags -->
+    <TextView
+        android:id="@+id/lbl_availableTags"
+        style="@style/MainLabelFont"
+        android:text="@string/available_tags"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_api" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <FrameLayout
+        android:id="@+id/frameLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="8dp"
+        android:background="@color/tag_json_bg"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lbl_availableTags">
+
+        <!-- Text: Available Tags-->
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/list_availableTags"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layoutManager="LinearLayoutManager"
+            tools:listItem="@layout/row_item_tag_result" />
+
+        <!-- No Available Tags Message -->
+        <TextView
+            android:id="@+id/txt_noAvailableTags"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/tag_json_bg"
+            android:gravity="center"
+            android:text="@string/no_avail_tags"
+            android:visibility="visible" />
+    </FrameLayout>
+
+    <!-- Button: Clear available tags -->
+    <Button
+        android:id="@+id/btn_clearAvailableTags"
+        style="@android:style/Widget.DeviceDefault.Button.Borderless.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="28dp"
+        android:layout_margin="8dp"
+        android:background="@null"
+        android:padding="0dp"
+        android:text="@string/clear"
+        android:textColor="@color/colorAccent"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toTopOf="@+id/frameLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_database" />
+
+</android.support.constraint.ConstraintLayout>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- TagChipView layout style -->
+    <style name="TaggerChipLayout">
+        <item name="android:layout_height">32dp</item>
+        <item name="android:paddingEnd">12dp</item>
+        <item name="android:paddingStart">4dp</item>
+    </style>
+
+    <!-- TagChipView tag label style -->
+    <style name="TaggerChipLabel" parent="android:TextAppearance.DeviceDefault.Small">
+        <item name="android:paddingStart">4dp</item>
+        <item name="android:paddingEnd">4dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/hs_white</item>
+        <item name="android:layout_gravity">center</item>
+    </style>
+
+
+</resources>

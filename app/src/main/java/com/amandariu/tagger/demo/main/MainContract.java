@@ -52,13 +52,15 @@ public interface MainContract {
 
         /**
          * Show the "no available tags for display" view.
+         * @param on True if the No Available Tags view should be displayed, else false.
          */
-        void showNoAvailableTags();
+        void showNoAvailableTags(boolean on);
 
         /**
          * Show the "no selected tags for display" view.
+         * @param on True if the No Selected Tags view should be displayed, else false.
          */
-        void showNoSelectedTags();
+        void showNoSelectedTags(boolean on);
     }
     //endregion
 

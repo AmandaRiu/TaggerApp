@@ -57,17 +57,7 @@ public class MainPresenter implements MainContract.Presenter {
                 //
                 // Clear loading indicator
                 mView.setLoadingIndicator(false);
-                //
-                // Display the appropriate view depending on the results
-                if (tags.isEmpty()) {
-                    //
-                    // Show a message indicating their are no tags available.
-                    mView.showNoAvailableTags();
-                } else {
-                    //
-                    // Show the tags
-                    mView.setAvailableTags(tags);
-                }
+                mView.setAvailableTags(tags);
             }
 
             @Override

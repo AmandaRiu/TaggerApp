@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/view_loading"
     android:elevation="8dp"
-    android:background="@color/loadingViewBg"
+    android:background="@color/loading_bg"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:showIn="@layout/activity_main"
@@ -26,7 +26,7 @@
 
     <TextView
         android:id="@+id/lbl_loading"
-        style="@style/TextAppearance.AR.Progress"
+        style="@style/LoadingStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"

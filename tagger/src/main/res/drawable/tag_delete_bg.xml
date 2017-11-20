@@ -3,6 +3,7 @@
     <item>
         <shape>
             <corners android:radius="20dp"/>
+            <solid android:color="@android:color/transparent"/>
         </shape>
     </item>
     <item android:drawable="@drawable/ic_delete"/>

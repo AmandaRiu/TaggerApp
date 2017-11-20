@@ -8,11 +8,13 @@ import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 import android.support.test.espresso.IdlingResource;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amandariu.tagger.ITag;
 import com.amandariu.tagger.TaggerActivity;
@@ -21,9 +23,7 @@ import com.amandariu.tagger.demo.Injection;
 import com.amandariu.tagger.demo.utils.AlertUtils;
 import com.amandariu.tagger.demo.utils.AndroidUtils;
 import com.amandariu.tagger.demo.utils.EspressoIdlingResource;
-import com.bluelinelabs.logansquare.LoganSquare;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,13 +34,15 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     private MainContract.Presenter mPresenter;
     //
     // View components
-    private TextView mTxtAvailableTags = null;
-    private TextView mTxtSelectedTags = null;
+    private SimpleTagListAdapter mAvailableTagsAdapter;
+    private SimpleTagListAdapter mSelectedTagsAdapter;
     private ViewGroup mViewLoading = null;
+    private TextView mNoAvailableTags;
+    private TextView mNoSelectedTags;
     //
     // State
-    private List<? extends ITag> mAvailableTags = null;
-    private List<? extends ITag> mSelectedTags = null;
+    private List<? extends ITag> mAvailableTags = new ArrayList<>();
+    private List<ITag> mSelectedTags = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,25 +66,99 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         Button btnSelectTags = findViewById(R.id.btn_selectTags);
         btnSelectTags.setOnClickListener(this);
         //
-        // Display Available and Selected Tags
-        mTxtAvailableTags = findViewById(R.id.txt_availableTags);
-        mTxtSelectedTags = findViewById(R.id.txt_selectedTags);
+        // Display Available Tags
+        mNoAvailableTags = findViewById(R.id.txt_noAvailableTags);
+        RecyclerView availList = findViewById(R.id.list_availableTags);
+        mAvailableTagsAdapter = new SimpleTagListAdapter(new ArrayList<ITag>());
+        availList.setAdapter(mAvailableTagsAdapter);
+        Button clearAvailableTags = findViewById(R.id.btn_clearAvailableTags);
+        clearAvailableTags.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mAvailableTags.clear();
+                setAvailableTags(mAvailableTags);
+            }
+        });
+        //
+        // Display Selected Tags
+        mNoSelectedTags = findViewById(R.id.txt_noSelectedTags);
+        RecyclerView selectList = findViewById(R.id.list_selectedTags);
+        mSelectedTagsAdapter = new SimpleTagListAdapter(new ArrayList<ITag>());
+        selectList.setAdapter(mSelectedTagsAdapter);
+        Button clearSelectedTags = findViewById(R.id.btn_clearSelectedTags);
+        clearSelectedTags.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mSelectedTags.clear();
+                setSelectedTags(mSelectedTags);
+            }
+        });
         //
         // Loading indicator
         mViewLoading = findViewById(R.id.view_loading);
+
+        if (savedInstanceState != null) {
+            //
+            // Restore any selected tags saved during configuration change.
+            Parcelable[] pSelTags = savedInstanceState
+                    .getParcelableArray(TaggerActivity.ARG_SELECTED_TAGS);
+            if (pSelTags != null && pSelTags.length > 0) {
+                mSelectedTags.clear();
+                for (Parcelable t : pSelTags) {
+                    mSelectedTags.add((ITag)t);
+                }
+                setSelectedTags(mSelectedTags);
+            }
+            //
+            // Restore available tags saved during configuration change
+            Parcelable[] pAvaTags = savedInstanceState
+                    .getParcelableArray(TaggerActivity.ARG_AVAILABLE_TAGS);
+            if (pAvaTags != null && pAvaTags.length > 0) {
+                List<ITag> tags = new ArrayList<>(pAvaTags.length);
+                for (Parcelable t : pAvaTags) {
+                    tags.add((ITag) t);
+                }
+                setAvailableTags(tags);
+            }
+        }
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        //
+        // Save selected tags
+        if (mSelectedTags.size() > 0) {
+            outState.putParcelableArray(
+                    TaggerActivity.ARG_SELECTED_TAGS,
+                    mSelectedTags.toArray(new ITag[mSelectedTags.size()]));
+        }
+        //
+        // Save available tags
+        if (mAvailableTags != null && mAvailableTags.size() > 0) {
+            outState.putParcelableArray(
+                    TaggerActivity.ARG_AVAILABLE_TAGS,
+                    mAvailableTags.toArray(new ITag[mAvailableTags.size()]));
+        }
+        super.onSaveInstanceState(outState);
+    }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mPresenter.start();
+//        mPresenter.start();
     }
 
 
     @Override
     protected void onDestroy() {
         mPresenter.destroyView();
+        mViewLoading = null;
+        mSelectedTags = null;
+        mAvailableTags = null;
+        mAvailableTagsAdapter = null;
+        mNoSelectedTags = null;
+        mNoAvailableTags = null;
+        mSelectedTagsAdapter = null;
         super.onDestroy();
     }
 
@@ -114,16 +190,13 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     public void setAvailableTags(@Nullable List<? extends ITag> tags) {
         Log.d(TAG, "Updating view with available tags ["
                 + (tags == null ? "null" : tags.size()) + "]");
-
-        if (tags != null && !tags.isEmpty()) {
-            try {
-                String json = LoganSquare.serialize(tags);
-                mTxtAvailableTags.setText(json);
-            } catch (IOException e) {
-                Log.e(TAG, "Error parsing available tags JSON!", e);
-            }
+        if (tags != null) {
+            mAvailableTagsAdapter.setTags(tags);
+        }
+        if (tags != null && tags.size() > 0) {
+            showNoAvailableTags(false);
         } else {
-            mTxtSelectedTags.setText(R.string.no_avail_tags);
+            showNoAvailableTags(true);
         }
         mAvailableTags = tags;
     }
@@ -140,16 +213,39 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                 + (tags == null ? "null" : tags.size()) + "]");
 
         if (tags != null && !tags.isEmpty()) {
-            try {
-                String json = LoganSquare.serialize(tags);
-                mTxtSelectedTags.setText(json);
-            } catch (IOException e) {
-                Log.e(TAG, "Error parsing JSON!", e);
-            }
+            showNoSelectedTags(false);
+            mSelectedTagsAdapter.setTags(tags);
         } else {
-            mTxtSelectedTags.setText(R.string.no_sel_tags);
+            showNoSelectedTags(true);
         }
-        mSelectedTags = tags;
+    }
+
+    /**
+     * Show the "no available tags for display" view.
+     *
+     * @param on True if the No Available Tags view should be displayed, else false.
+     */
+    @Override
+    public void showNoAvailableTags(boolean on) {
+        if (on) {
+            mNoAvailableTags.setVisibility(View.VISIBLE);
+        } else {
+            mNoAvailableTags.setVisibility(View.GONE);
+        }
+    }
+
+    /**
+     * Show the "no selected tags for display" view.
+     *
+     * @param on True if the No Selected Tags view should be displayed, else false.
+     */
+    @Override
+    public void showNoSelectedTags(boolean on) {
+        if (on) {
+            mNoSelectedTags.setVisibility(View.VISIBLE);
+        } else {
+            mNoSelectedTags.setVisibility(View.GONE);
+        }
     }
 
     /**
@@ -169,22 +265,6 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     public boolean isActive() {
         return !AndroidUtils.hasMinimumApi(17) || !isDestroyed();
     }
-
-    /**
-     * Show the "no available tags for display" view.
-     */
-    @Override
-    public void showNoAvailableTags() {
-        // TODO: 11/5/17 needed?
-    }
-
-    /**
-     * Show the "no selected tags for display" view.
-     */
-    @Override
-    public void showNoSelectedTags() {
-        // TODO: 11/5/17 needed?
-    }
     //endregion
 
 
@@ -193,15 +273,22 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_api:
-                mTxtAvailableTags.setText("");
+                showNoAvailableTags(true);
                 mPresenter.loadTagsFromRemote();
                 break;
             case R.id.btn_database:
-                mTxtAvailableTags.setText("");
+                showNoAvailableTags(true);
                 mPresenter.loadTagsFromLocal();
                 break;
             case R.id.btn_selectTags:
-                mPresenter.selectTags(this, mAvailableTags, mSelectedTags);
+                if (mAvailableTags != null && mAvailableTags.size() > 0) {
+                    mPresenter.selectTags(this, mAvailableTags, mSelectedTags);
+                } else {
+                    Toast.makeText(
+                            this,
+                            R.string.no_tags_loaded,
+                            Toast.LENGTH_SHORT).show();
+                }
                 break;
             default:
                 Log.e(TAG, "Unknown view sent to onClick handler!");
@@ -225,13 +312,13 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
             if (resultCode == RESULT_OK) {
                 Parcelable[] pSelTags
                         = data.getParcelableArrayExtra(TaggerActivity.ARG_SELECTED_TAGS);
-                List<ITag> tagsList = new ArrayList<>();
+                mSelectedTags.clear();
                 if (pSelTags != null && pSelTags.length > 0) {
                     for (Parcelable p : pSelTags) {
-                        tagsList.add((ITag)p);
+                        mSelectedTags.add((ITag)p);
                     }
                 }
-                setSelectedTags(tagsList);
+                setSelectedTags(mSelectedTags);
             }
         }
         super.onActivityResult(requestCode, resultCode, data);

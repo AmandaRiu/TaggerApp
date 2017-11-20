@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="TaggerLabel" parent="android:TextAppearance.DeviceDefault.Medium">
+
+    </style>
+
+    <style name="TaggerFragmentLayout">
+        <item name="android:layout_margin">8dp</item>
+    </style>
+
+    <!-- Defines the TagChipView layout style -->
+    <style name="TaggerChipLayout">
+        <item name="android:layout_height">32dp</item>
+        <item name="android:paddingLeft">12dp</item>
+        <item name="android:paddingRight">4dp</item>
+    </style>
+
+    <!-- Defines the tag label in the TagChipView -->
+    <style name="TaggerChipLabel" parent="android:TextAppearance.DeviceDefault.Small">
+        <item name="android:paddingLeft">4dp</item>
+        <item name="android:paddingRight">4dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/hs_white</item>
+        <item name="android:layout_gravity">center</item>
+    </style>
+
+    <!-- TagChipView close button style -->
+    <style name="TaggerChipCloseBtn" parent="Base.Widget.AppCompat.ImageButton">
+        <item name="android:layout_width">24dp</item>
+        <item name="android:layout_height">24dp</item>
+        <item name="android:background">@null</item>
+        <item name="android:scaleType">fitXY</item>
+        <item name="android:padding">4dp</item>
+        <item name="android:layout_margin">4dp</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:src">@drawable/tag_delete_bg</item>
+    </style>
+</resources>
