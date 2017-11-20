@@ -37,7 +37,7 @@ public class MainPresenter implements MainContract.Presenter {
 
     private boolean mFirstLoad = true;
 
-    public MainPresenter(@NonNull TagsRepository repo, @NonNull MainContract.View view) {
+    MainPresenter(@NonNull TagsRepository repo, @NonNull MainContract.View view) {
         this.mRepo = checkNotNull(repo, "TagsRepository cannot be null!");
         this.mView = checkNotNull(view, "View cannot be null!");
         this.mView.setPresenter(this);

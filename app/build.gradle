@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion rootProject.compileSdkVersion
@@ -52,7 +53,7 @@ android {
     android.variantFilter { variant ->
         if (variant.buildType.name.equals('release')
                 && variant.getFlavors().get(0).name.equals('mock')) {
-            variant.setIgnore(true);
+            variant.setIgnore(true)
         }
     }
 
@@ -80,6 +81,7 @@ dependencies {
     implementation "com.android.support.constraint:constraint-layout:$constraintLayoutVersion"
     implementation "com.google.guava:guava:$guavaVersion"
     implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     implementation "com.android.support.test.espresso:espresso-idling-resource:$espressoVersion"
     implementation ("com.squareup.okhttp3:logging-interceptor:$okhttp3LoggingInterceptorVerson") {
         exclude group: 'com.squareup.okhttp3', module: 'okhttp'
