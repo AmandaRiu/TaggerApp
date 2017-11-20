@@ -74,6 +74,8 @@ The demo app is split into two sections.
 
 ![Tagger Portrait Screenshot](screenshots/tagger_portrait.png "Screenshot of the Tag Selector in landscape mode")
 
+# Video
+![Video Gif](screenshots/video.gif "How it all works")
 
   [1]: https://github.com/xiaofeng-han/AndroidLibs/tree/master/flowlayoutmanager
   [2]: https://material.io/guidelines/components/chips.html
