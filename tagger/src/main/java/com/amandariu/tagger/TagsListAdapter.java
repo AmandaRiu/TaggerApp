@@ -64,6 +64,14 @@ public class TagsListAdapter extends RecyclerView.Adapter<TagsListAdapter.ViewHo
     }
 
     /**
+     * @return The active list of available tags.
+     */
+    @NonNull
+    List<ITag> getAvailableTags() {
+        return mAvailableTags;
+    }
+
+    /**
      * Updates the state of the provided tag by removing it from teh list of
      * selected tags and telling this adapter to refresh the state of the view
      * representing this tag.

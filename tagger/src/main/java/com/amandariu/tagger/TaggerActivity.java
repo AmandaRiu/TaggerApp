@@ -3,6 +3,7 @@ package com.amandariu.tagger;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -45,12 +46,17 @@ public class TaggerActivity extends AppCompatActivity implements
     public static final String ARG_SELECTED_TAGS = "com.amandariu.tagger.SELECTED-TAGS";
     public static final String ARG_AVAILABLE_TAGS = "com.amandariu.tagger.AVAILABLE-TAGS";
     public static String ARG_TAG_EXTRAS = "com.amandariu.tagger.TAG-EXTRAS";
+    private static final String ARG_SEARCH_QUERY_STRING = "com.amandariu.tagger.SEARCH-QUERY-STRING";
 
     public static int REQUEST_CODE = 1000;
 
     private TagChipsFragment mChipsFragment;
     private TagListFragment mListFragment;
     private boolean mHasChanges = false;
+    private SearchView mSearchView;
+    private MenuItem mSearchMenuItem;
+    private String mSearchQuery = null;
+    private Handler mMainHandler = null;
 
     /**
      * Creates an intent for launching this activity. Using this method ensures the
@@ -83,6 +89,8 @@ public class TaggerActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tagger);
+
+        mMainHandler = new Handler();
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -137,11 +145,32 @@ public class TaggerActivity extends AppCompatActivity implements
                     .commit();
 
         } else {
+            //
+            // Restore reference to fragments.
             mChipsFragment = (TagChipsFragment) getSupportFragmentManager()
                     .findFragmentByTag(TagChipsFragment.TAG);
             mListFragment = (TagListFragment) getSupportFragmentManager()
                     .findFragmentByTag(TagListFragment.TAG);
+            //
+            // Grab the saved query for the search bar if available.
+            String query = savedInstanceState.getString(ARG_SEARCH_QUERY_STRING, null);
+            if (query != null) {
+                mSearchQuery = query;
+            }
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        //
+        // Release references
+        mChipsFragment = null;
+        mListFragment = null;
+        mSearchView = null;
+        mSearchQuery = null;
+        mSearchMenuItem = null;
+        mMainHandler = null;
+        super.onDestroy();
     }
 
     /**
@@ -152,11 +181,31 @@ public class TaggerActivity extends AppCompatActivity implements
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.tagger_menu, menu);
 
-        final MenuItem searchItem = menu.findItem(R.id.action_search);
-        final SearchView searchView = (SearchView) searchItem.getActionView();
-        searchView.setOnQueryTextListener(this);
-
+        mSearchMenuItem  = menu.findItem(R.id.action_search);
+        mSearchView = (SearchView) mSearchMenuItem.getActionView();
+        mSearchView.setOnQueryTextListener(this);
         return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        //
+        // Restore the state of the search bar if needed.
+        if (mSearchQuery != null && !mSearchQuery.isEmpty()) {
+            final String query = mSearchQuery;
+            if (mMainHandler != null && mSearchMenuItem != null && mSearchView != null) {
+                mMainHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mSearchMenuItem.expandActionView();
+                        mSearchView.setQuery(query, true);
+                        mSearchView.clearFocus();
+                    }
+                });
+            }
+            mSearchQuery = null;
+        }
+        return super.onPrepareOptionsMenu(menu);
     }
 
     /**
@@ -173,6 +222,16 @@ public class TaggerActivity extends AppCompatActivity implements
         } else {
             return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        //
+        // Save the state of the search view if we're to restore.
+        if (mSearchView.isShown()) {
+            outState.putString(ARG_SEARCH_QUERY_STRING, mSearchView.getQuery().toString());
+        }
+        super.onSaveInstanceState(outState);
     }
 
     /**

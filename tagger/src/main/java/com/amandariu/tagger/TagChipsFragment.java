@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,34 +58,61 @@ public class TagChipsFragment extends Fragment
         return fragment;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
     /**
      * {@inheritDoc}
      */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
         View v = inflater.inflate(R.layout.fragment_tag_chips, container, false);
         TagChipsLayout layout = v.findViewById(R.id.tagChipsLayout);
-        if (getArguments() == null) {
-            throw new IllegalArgumentException("Selected Tags must be included in" +
-                    " the arguments for this fragment. Please use the newInstance(...) method for" +
-                    " proper instantiation.");
-        }
-        Parcelable[] pSelTags = getArguments().getParcelableArray(TaggerActivity.ARG_SELECTED_TAGS);
+
         List<ITag> selectedTags = new ArrayList<>();
-        if (pSelTags != null && pSelTags.length > 0) {
-            for (Parcelable p : pSelTags) {
-                if (!(p instanceof ITag)) {
-                    throw new ClassCastException("Invalid Array of Selected Tags. " +
-                            "The tags MUST extend ITag!");
+        if (savedInstanceState == null) {
+            if (getArguments() == null) {
+                throw new IllegalArgumentException("Selected Tags must be included in" +
+                        " the arguments for this fragment. Please use the newInstance(...) method for" +
+                        " proper instantiation.");
+            }
+            Parcelable[] pSelTags = getArguments().getParcelableArray(TaggerActivity.ARG_SELECTED_TAGS);
+            if (pSelTags != null && pSelTags.length > 0) {
+                for (Parcelable p : pSelTags) {
+                    if (!(p instanceof ITag)) {
+                        throw new ClassCastException("Invalid Array of Selected Tags. " +
+                                "The tags MUST extend ITag!");
+                    }
+                    selectedTags.add((ITag) p);
                 }
-                selectedTags.add((ITag)p);
+            }
+        } else {
+            Parcelable[] pSelList = savedInstanceState.getParcelableArray(TaggerActivity.ARG_SELECTED_TAGS);
+            if (pSelList != null && pSelList.length > 0) {
+                for (Parcelable p : pSelList) {
+                    selectedTags.add((ITag)p);
+                }
             }
         }
         mAdapter = new TagChipsAdapter(selectedTags, this);
         layout.setAdapter(mAdapter);
+
         return v;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        final List<ITag> selectedTags = mAdapter.getSelectedTags();
+        if (selectedTags.size() > 0) {
+            outState.putParcelableArray(TaggerActivity.ARG_SELECTED_TAGS,
+                    selectedTags.toArray(new ITag[selectedTags.size()]));
+        }
+        super.onSaveInstanceState(outState);
     }
 
     /**
@@ -121,13 +149,10 @@ public class TagChipsFragment extends Fragment
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public void onDestroy() {
+    public void onDestroyView() {
         mAdapter = null;
-        super.onDestroy();
+        super.onDestroyView();
     }
 
     /**

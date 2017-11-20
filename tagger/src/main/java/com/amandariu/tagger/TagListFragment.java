@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -68,40 +69,52 @@ public class TagListFragment extends Fragment implements SearchView.OnQueryTextL
         return fragment;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
     /**
      * {@inheritDoc}
      */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_tag_list, container, false);
 
-        // Set the adapter
+        View view = inflater.inflate(R.layout.fragment_tag_list, container, false);
         Context context = view.getContext();
-        //
-        // TODO: 11/19/17 check if we should be validating savedInstanceState
-        if (getArguments() == null) {
-            throw new IllegalArgumentException("Selected and Available Tags must be included in " +
-                    "the arguments for this fragment. Please use the newInstance(...) method for" +
-                    " instantiation.");
+
+        List<ITag> selectedTags = new ArrayList<>();
+        List<ITag> availableTags = new ArrayList<>();
+        Parcelable[] pSelTags;
+        Parcelable[] pAvaTags;
+
+        if (savedInstanceState == null) {
+            if (getArguments() == null) {
+                throw new IllegalArgumentException("Selected and Available Tags must be included in " +
+                        "the arguments for this fragment. Please use the newInstance(...) method for" +
+                        " instantiation.");
+            }
+            pSelTags = getArguments().getParcelableArray(TaggerActivity.ARG_SELECTED_TAGS);
+            pAvaTags = getArguments().getParcelableArray(TaggerActivity.ARG_AVAILABLE_TAGS);
+        } else {
+            pSelTags = savedInstanceState.getParcelableArray(TaggerActivity.ARG_SELECTED_TAGS);
+            pAvaTags = savedInstanceState.getParcelableArray(TaggerActivity.ARG_AVAILABLE_TAGS);
         }
         //
         // Populate Selected Tags
-        Parcelable[] pSelTags = getArguments().getParcelableArray(TaggerActivity.ARG_SELECTED_TAGS);
-        List<ITag> selectedTags = new ArrayList<>();
         if (pSelTags != null && pSelTags.length > 0) {
             for (Parcelable p : pSelTags) {
                 if (!(p instanceof ITag)) {
                     throw new ClassCastException("Invalid Array of Selected Tags. " +
                             "The tags MUST extend ITag!");
                 }
-                selectedTags.add((ITag)p);
+                selectedTags.add((ITag) p);
             }
         }
         //
         // Populate Available Tags
-        Parcelable[] pAvaTags = getArguments().getParcelableArray(TaggerActivity.ARG_AVAILABLE_TAGS);
-        List<ITag> availableTags = new ArrayList<>();
         if (pAvaTags != null && pAvaTags.length > 0) {
             for (Parcelable p : pAvaTags) {
                 if (!(p instanceof ITag)) {
@@ -111,13 +124,25 @@ public class TagListFragment extends Fragment implements SearchView.OnQueryTextL
                 availableTags.add((ITag)p);
             }
         }
-
-        mAdapter = new TagsListAdapter(availableTags, selectedTags,  mListener);
+        mAdapter = new TagsListAdapter(availableTags, selectedTags, mListener);
         RecyclerView recyclerView = view.findViewById(R.id.list);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.setAdapter(mAdapter);
 
         return view;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        final List<ITag> selectedTags = mAdapter.getSelectedTags();
+        final List<ITag> availTags = mAdapter.getAvailableTags();
+        if (selectedTags.size() > 0) {
+            outState.putParcelableArray(TaggerActivity.ARG_SELECTED_TAGS,
+                    selectedTags.toArray(new ITag[selectedTags.size()]));
+        }
+        outState.putParcelableArray(TaggerActivity.ARG_AVAILABLE_TAGS,
+                availTags.toArray(new ITag[availTags.size()]));
+        super.onSaveInstanceState(outState);
     }
 
     /**
@@ -160,15 +185,11 @@ public class TagListFragment extends Fragment implements SearchView.OnQueryTextL
         return mAdapter.getSelectedTags();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public void onDestroy() {
+    public void onDestroyView() {
         mAdapter = null;
-        super.onDestroy();
+        super.onDestroyView();
     }
-
 
     //region Filtering
     /**
