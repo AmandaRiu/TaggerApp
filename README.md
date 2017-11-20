@@ -1,9 +1,8 @@
 
 # Tagger Demo App
+![Video Gif](screenshots/video.gif "How it all works")
 
 ### Overview
-
-![Video Gif](screenshots/video.gif "How it all works")
 
 A demo application for playing with the custom Tagger library. Tagger allows for plug-n-play tag selection.
 
