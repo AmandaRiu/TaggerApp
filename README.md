@@ -20,8 +20,7 @@ The Tagger library includes the following features:
  - **Tag Filtering mode**: Filters available and selected tags as you type. Designed to survive orientation changes. 
 
 
-----------
-#### Considerations
+### Considerations
 
  - **Minimum SDK**: I chose to set the minimum SDK to 16 to match the minimum SDK of the current HelpScout Android App in the Google Play Store. 
  - **Duplicate tags**: Since each tag has an ID and color associated with it, I did not remove any tags with duplicate tag labels. If I were designing this to not allow duplicates, I would've set the tag label as the primary key in the database and used the database to dedupe the list before sending the results. 
@@ -66,11 +65,13 @@ The demo app is split into two sections.
 **Demo App**
 
 ![Portrait Screenshot](screenshots/main_portrait.png "Screenshot of main Demo App in portrait mode")
+
 ![Landscape Screenshot](screenshots/main_landscape.png "Screenshot of main Demo App in landscape mode")
  
 **Tag Selector View**
 
 ![Tagger Portrait Screenshot](screenshots/tagger_portrait.png "Screenshot of the Tag Selector in portrait mode")
+
 ![Tagger Portrait Screenshot](screenshots/tagger_portrait.png "Screenshot of the Tag Selector in landscape mode")
 
 
