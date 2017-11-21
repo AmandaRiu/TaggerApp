@@ -21,7 +21,7 @@ object TagConverter {
     fun toTagList(tags: List<TagEntity>): List<ITag> {
         val newTags = ArrayList<ITag>(tags.size)
         for (t in tags) {
-            newTags.add(Tag(t.id, t.label, t.color))
+            newTags.add(Tag(t.id, t.label!!, t.color!!))
         }
         return newTags
     }

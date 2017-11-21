@@ -1,13 +1,13 @@
-package com.amandariu.tagger.demo.data.source;
+package com.amandariu.tagger.demo.data.source
 
-import android.support.annotation.NonNull;
-import com.amandariu.tagger.ITag;
-import java.util.List;
+import com.amandariu.tagger.ITag
 
 /**
- * @author amandariu (11/12/17)
+ * Base interface for datasources.
+ *
+ * @author Amanda Riu
  */
-public interface ISourceBase {
+interface ISourceBase {
     /**
      * Methods required for working with the TagsDataSource.
      */
@@ -16,22 +16,22 @@ public interface ISourceBase {
          * Tags have been loaded from a datasource.
          * @param tags The tags pulled from the datasource.
          */
-        void onTagsLoaded(List<? extends ITag> tags);
+        fun onTagsLoaded(tags: List<ITag>)
 
         /**
          * No tags available for loading.
          */
-        void onDataNotAvailable(@NonNull String msg);
+        fun onDataNotAvailable(msg: String)
     }
 
     /**
      * Load tags from one or more datasources.
      * @param callback The callback to send the loaded tags to.
      */
-    void getTags(@NonNull ILoadTagsCallback callback);
+    fun getTags(callback: ILoadTagsCallback)
 
     /**
      * Gracefully shutdown and release references.
      */
-    void shutdown();
+    fun shutdown()
 }

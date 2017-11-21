@@ -93,7 +93,9 @@ private constructor(private var mTagsRemoteDataSource: ITagsDataSource?,
             // Return cached tags
             Log.d(TAG, "Returning tags from cache")
             mIsFetchingTags = false
-            callback.onTagsLoaded(mCachedTags)
+            mCachedTags?.let {
+                callback.onTagsLoaded(it)
+            }
         } else {
             //
             // If network connected, pull the tags from the remote api to
