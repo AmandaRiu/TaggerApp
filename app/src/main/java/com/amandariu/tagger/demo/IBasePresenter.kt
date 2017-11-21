@@ -1,4 +1,4 @@
-package com.amandariu.tagger.demo;
+package com.amandariu.tagger.demo
 
 /**
  * This interface should be implemented by all the Presenters in this project for
@@ -6,14 +6,14 @@ package com.amandariu.tagger.demo;
  *
  * @author Amanda Riu
  */
-public interface IBasePresenter {
+interface IBasePresenter {
     /**
      * Initialize the presenter.
      */
-    void start();
+    fun start()
 
     /**
      * The view is being destroyed. Clear any references in the presenter.
      */
-    void destroyView();
+    fun destroyView()
 }

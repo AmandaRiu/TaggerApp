@@ -1,87 +1,83 @@
-package com.amandariu.tagger.demo.main;
+package com.amandariu.tagger.demo.main
 
+import android.app.Activity
+import android.content.Context
 
-import android.app.Activity;
-import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
-import com.amandariu.tagger.ITag;
-import com.amandariu.tagger.demo.IBasePresenter;
-import com.amandariu.tagger.demo.IBaseView;
-
-import java.util.List;
+import com.amandariu.tagger.ITag
+import com.amandariu.tagger.demo.IBasePresenter
+import com.amandariu.tagger.demo.IBaseView
 
 /**
- * Specifies the contract between the view and presenter for {@link MainActivity}
+ * Specifies the contract between the view and presenter for [MainActivity]
  *
  * @author Amanda Riu
  */
 interface MainContract {
 
     //region View
-    interface View extends IBaseView<Presenter> {
+    interface View : IBaseView<Presenter> {
+
+        /**
+         * @return True if the view is still active, else false.
+         */
+        val isActive: Boolean
+
         /**
          * Request the loading indicator be displayed or hidden.
          * @param active If true, show the loading indicator. If false, hide it.
          */
-        void setLoadingIndicator(boolean active);
+        fun setLoadingIndicator(active: Boolean)
 
         /**
          * Update the view with the available tags provided.
          * @param tags The tags fetched from the Repo.
          */
-        void setAvailableTags(@Nullable List<? extends ITag> tags);
+        fun setAvailableTags(tags: List<ITag>?)
 
         /**
          * Update the view with the selected tags provided. These are the tags
          * the user selected using the custom Tag selector.
          * @param tags A list of tags the user selected.
          */
-        void setSelectedTags(@Nullable List<? extends ITag> tags);
+        fun setSelectedTags(tags: List<ITag>?)
 
         /**
          * Display an error message to the end user.
          * @param msg The message to be displayed.
          */
-        void showError(@NonNull String msg);
-
-        /**
-         * @return True if the view is still active, else false.
-         */
-        boolean isActive();
+        fun showError(msg: String)
 
         /**
          * Show the "no available tags for display" view.
          * @param on True if the No Available Tags view should be displayed, else false.
          */
-        void showNoAvailableTags(boolean on);
+        fun showNoAvailableTags(on: Boolean)
 
         /**
          * Show the "no selected tags for display" view.
          * @param on True if the No Selected Tags view should be displayed, else false.
          */
-        void showNoSelectedTags(boolean on);
+        fun showNoSelectedTags(on: Boolean)
     }
     //endregion
 
     //region Presenter
-    interface Presenter extends IBasePresenter {
+    interface Presenter : IBasePresenter {
         /**
          * Load the tags from the various data sources.
          * @param forceUpdate If true, rebuild the cache with fresh data.
          */
-        void loadTags(boolean forceUpdate);
+        fun loadTags(forceUpdate: Boolean)
 
         /**
          * Explicitly load the tags from the local database.
          */
-        void loadTagsFromLocal();
+        fun loadTagsFromLocal()
 
         /**
          * Explicitly fetch tags from the remote api.
          */
-        void loadTagsFromRemote(@NonNull Context ctx);
+        fun loadTagsFromRemote(ctx: Context)
 
         /**
          * Open the custom Tag selector.
@@ -90,9 +86,9 @@ interface MainContract {
          * @param availableTags A list of all available tags.
          * @param selectedTags A list of all selected tags.
          */
-        void selectTags(@NonNull Activity activity,
-                        @NonNull List<? extends ITag> availableTags,
-                        @Nullable List<? extends ITag> selectedTags);
+        fun selectTags(activity: Activity,
+                       availableTags: List<ITag>,
+                       selectedTags: List<ITag>?)
     }
     //endregion
 }

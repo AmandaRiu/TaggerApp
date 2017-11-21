@@ -7,7 +7,7 @@ import android.util.Log
 import com.amandariu.tagger.ITag
 import com.amandariu.tagger.TaggerActivity
 import com.amandariu.tagger.demo.R
-import com.amandariu.tagger.demo.common.isNetworkConnected
+import com.amandariu.tagger.demo.utils.isNetworkConnected
 import com.amandariu.tagger.demo.data.source.ISourceBase
 import com.amandariu.tagger.demo.data.source.ITagRepository
 import com.amandariu.tagger.demo.data.source.TagsRepository
@@ -44,7 +44,7 @@ class MainPresenter internal constructor(repo: TagsRepository,
                 //
                 // This callback may be called twice, once for cache and once for loading
                 // the data from the remote API, so we must check before decrementing.
-                if (!EspressoIdlingResource.getIdlingResource().isIdleNow) {
+                if (!EspressoIdlingResource.idlingResource.isIdleNow) {
                     EspressoIdlingResource.decrement()
                 }
                 //
@@ -106,9 +106,9 @@ class MainPresenter internal constructor(repo: TagsRepository,
     /**
      * Open the custom Tag selector.
      *
-     * @param activity      The current activity.
-     * @param availableTags A list of all available tags.
-     * @param selectedTags  A list of all selected tags.
+     * @param [activity] The current activity.
+     * @param [availableTags] A list of all available tags.
+     * @param [selectedTags] A list of all selected tags.
      */
     override fun selectTags(activity: Activity,
                             availableTags: List<ITag>,

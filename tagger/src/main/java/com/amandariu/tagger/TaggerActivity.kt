@@ -140,7 +140,6 @@ class TaggerActivity : AppCompatActivity(), TagListFragment.TagListFragmentListe
                     .beginTransaction()
                     .replace(R.id.fragment_tagList, mListFragment, TagListFragment.TAG)
                     .commit()
-
         } else {
             //
             // Restore reference to fragments.

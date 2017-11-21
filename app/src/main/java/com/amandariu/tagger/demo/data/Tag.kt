@@ -28,7 +28,6 @@ class Tag : ITag, Parcelable {
     @JsonField(name = arrayOf("tag"))
     override var label: String = ""
 
-
     constructor() {
         // empty constructor required by LoganSquare
     }
@@ -62,8 +61,8 @@ class Tag : ITag, Parcelable {
     /**
      * Flatten this object in to a Parcel.
      *
-     * @param dest  The Parcel in which the object should be written.
-     * @param flags Additional flags about how the object should be written.
+     * @param [dest] The Parcel in which the object should be written.
+     * @param [flags] Additional flags about how the object should be written.
      * May be 0 or [.PARCELABLE_WRITE_RETURN_VALUE].
      */
     override fun writeToParcel(dest: Parcel, flags: Int) {

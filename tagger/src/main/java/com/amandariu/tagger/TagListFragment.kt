@@ -191,7 +191,6 @@ class TagListFragment : Fragment(), SearchView.OnQueryTextListener {
     }
     //endregion
 
-
     /**
      * Listener methods for monitoring the selection and de-selection of
      * Tags. This interface should be implemented by any Activity that works

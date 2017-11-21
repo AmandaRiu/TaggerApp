@@ -4,7 +4,7 @@ import android.content.Context
 import android.util.Log
 import com.amandariu.tagger.ITag
 import com.amandariu.tagger.demo.TaggerApplication
-import com.amandariu.tagger.demo.common.isNetworkConnected
+import com.amandariu.tagger.demo.utils.isNetworkConnected
 import java.util.ArrayList
 import com.google.common.base.Preconditions.checkNotNull
 import com.amandariu.tagger.demo.data.source.ISourceBase.ILoadTagsCallback
@@ -55,7 +55,6 @@ private constructor(private var mTagsRemoteDataSource: ITagsDataSource?,
      */
     private var mCacheIsDirty = false
 
-
     /**
      * Shut down this repository and all attached datasources.
      */
@@ -84,7 +83,7 @@ private constructor(private var mTagsRemoteDataSource: ITagsDataSource?,
 
         if (mIsFetchingTags) {
             Log.w(TAG, "TagsRepository is already fetching tags...do nothing.")
-            return  // already actively pulling tags.
+            return // already actively pulling tags.
         }
 
         checkNotNull(callback)
@@ -100,7 +99,7 @@ private constructor(private var mTagsRemoteDataSource: ITagsDataSource?,
             //
             // If network connected, pull the tags from the remote api to
             // refresh the database.
-            val ctx: Context = TaggerApplication.getInstance().applicationContext
+            val ctx: Context = TaggerApplication.instance!!.applicationContext
             if (isNetworkConnected(ctx)) {
                 //
                 // Grab tags from remote api.

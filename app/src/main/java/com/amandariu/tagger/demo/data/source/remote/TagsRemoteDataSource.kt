@@ -8,7 +8,7 @@ import com.amandariu.tagger.demo.TaggerApplication
 import com.amandariu.tagger.demo.data.Tag
 import com.amandariu.tagger.demo.data.source.ISourceBase
 import com.amandariu.tagger.demo.data.source.ITagsDataSource
-import com.amandariu.tagger.demo.utils.HttpUtils
+import com.amandariu.tagger.demo.utils.trustAllOkHttpClientBuilder
 import com.github.aurae.retrofit2.LoganSquareConverterFactory
 
 import java.io.IOException
@@ -49,7 +49,7 @@ class TagsRemoteDataSource : ITagsDataSource {
         //
         // Singleton.
         // Creates a custom OkHttpClient that trusts all certificates
-        val clientBuilder = HttpUtils.getTrustAllOkHttpClientBuilder()
+        val clientBuilder = trustAllOkHttpClientBuilder
         clientBuilder.connectTimeout(30, TimeUnit.SECONDS)
         clientBuilder.readTimeout(60, TimeUnit.SECONDS)
         clientBuilder.addNetworkInterceptor { chain ->
@@ -62,7 +62,7 @@ class TagsRemoteDataSource : ITagsDataSource {
 
             newRequest = originalRequest.newBuilder()
                     .addHeader(
-                            HttpUtils.HeaderContracts.HEADER_CONTENT_TYPE,
+                            "Content-Type",
                             "application/json")
                     .url(url)
                     .build()
@@ -103,7 +103,7 @@ class TagsRemoteDataSource : ITagsDataSource {
                         callback.onDataNotAvailable(msg)
                     } catch (io: IOException) {
                         callback.onDataNotAvailable(
-                                TaggerApplication.getInstance().getString(R.string.error_remote_api))
+                                TaggerApplication.instance!!.getString(R.string.error_remote_api))
                     }
 
                     val elapsedTime = System.nanoTime() - startTime

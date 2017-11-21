@@ -1,6 +1,5 @@
 package com.amandariu.tagger.demo.data.source
 
-
 /**
  * Interface for working with the Repository for this application.
  *

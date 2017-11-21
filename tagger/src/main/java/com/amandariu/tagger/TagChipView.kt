@@ -1,7 +1,6 @@
 package com.amandariu.tagger
 
 import android.content.Context
-import android.content.res.TypedArray
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.view.Gravity
@@ -10,7 +9,6 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-
 
 /**
  * Custom Chip view. This view contains a label, and optionally, a 'delete' button.

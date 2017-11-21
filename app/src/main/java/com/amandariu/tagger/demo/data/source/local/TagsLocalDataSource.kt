@@ -28,7 +28,7 @@ class TagsLocalDataSource : ITagsDataSource {
         Log.v(TAG, "Initializing the local Tag Datasource")
         val startTime = System.nanoTime()
         mDb = Room.databaseBuilder(
-                TaggerApplication.getInstance().applicationContext,
+                TaggerApplication.instance!!.applicationContext,
                 TagDatabase::class.java,
                 TagDatabase.DATABASE_NAME)
                 .build()

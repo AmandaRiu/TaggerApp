@@ -1,4 +1,4 @@
-package com.amandariu.tagger.demo.common
+package com.amandariu.tagger.demo.utils
 
 import android.content.Context
 import android.net.ConnectivityManager
