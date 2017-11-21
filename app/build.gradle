@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion rootProject.compileSdkVersion
@@ -89,15 +90,15 @@ dependencies {
     implementation("com.github.aurae.retrofit2:converter-logansquare:$loganSquareConverterVersion") {
         exclude group: 'com.squareup.retrofit2', module: 'retrofit'
     }
-    annotationProcessor "com.bluelinelabs:logansquare-compiler:$loganSquareVersion"
+    kapt "com.bluelinelabs:logansquare-compiler:$loganSquareVersion"
     //
     // Lifecycle architecture
     implementation "android.arch.lifecycle:extensions:$lifecycleVersion"
     annotationProcessor "android.arch.lifecycle:compiler:$lifecycleVersion"
     implementation "android.arch.lifecycle:extensions:$lifecycleVersion"
     implementation "android.arch.persistence.room:runtime:$roomVersion"
-    implementation "android.arch.persistence.room:runtime:$roomVersion"
     annotationProcessor "android.arch.persistence.room:compiler:$roomVersion"
+    kapt "android.arch.persistence.room:compiler:$roomVersion"
     //
     // Dependencies for local unit tests
     testImplementation "junit:junit:$junitVersion"

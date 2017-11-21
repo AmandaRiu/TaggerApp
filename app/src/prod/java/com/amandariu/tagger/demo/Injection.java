@@ -20,6 +20,6 @@ public class Injection {
 
     public static TagsRepository provideTagsRepository(@NonNull Context context) {
         checkNotNull(context);
-        return TagsRepository.getInstance(new TagsRemoteDataSource(), new TagsLocalDataSource());
+        return TagsRepository.Companion.getInstance(new TagsRemoteDataSource(), new TagsLocalDataSource());
     }
 }
