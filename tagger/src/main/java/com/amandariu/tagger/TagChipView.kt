@@ -18,22 +18,22 @@ import android.widget.TextView
  * @author Amanda Riu
  */
 class TagChipView @JvmOverloads constructor(context: Context,
-                                            attrs: AttributeSet? = null,
-                                            defStyleAttr: Int = 0)
-    : LinearLayout(context, attrs, defStyleAttr) {
+                                                attrs: AttributeSet? = null,
+                                                defStyleAttr: Int = 0) : LinearLayout(context, attrs, defStyleAttr) {
 
     var chipTag: ITag? = null
         set(tag) {
             field = tag
-            mTxtLabel.text = chipTag!!.label
-            if (chipTag!!.colorInt != -1) {
+            mTxtLabel.text = chipTag?.label
+
+            chipTag?.let {
                 val gd = GradientDrawable()
                 gd.setColor(chipTag!!.colorInt)
                 gd.cornerRadius = getDensityPixel(context, 16).toFloat()
                 background = gd
+                invalidate()
+                requestLayout()
             }
-            invalidate()
-            requestLayout()
         }
 
     private val mTxtLabel: TextView
@@ -74,9 +74,7 @@ class TagChipView @JvmOverloads constructor(context: Context,
 
         if (mBtnDelete.visibility == View.VISIBLE) {
             setOnClickListener {
-                if (mListener != null) {
-                    mListener!!.onTagClosed(this@TagChipView)
-                }
+                mListener?.onTagClosed(this@TagChipView)
             }
         }
     }
