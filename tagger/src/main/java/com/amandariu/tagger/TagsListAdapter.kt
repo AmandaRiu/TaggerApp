@@ -143,7 +143,6 @@ internal constructor(availTags: MutableList<ITag>,
         return mSelectedTags.contains(tag)
     }
 
-
     //region Filtering
     /**
      * {@inheritDoc}
@@ -193,7 +192,6 @@ internal constructor(availTags: MutableList<ITag>,
         }
     }
     //endregion
-
 
     inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
         var mTag: ITag? = null

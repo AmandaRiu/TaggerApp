@@ -101,15 +101,8 @@
     <!-- Button: Clear available tags -->
     <Button
         android:id="@+id/btn_clearAvailableTags"
-        style="@android:style/Widget.DeviceDefault.Button.Borderless.Small"
-        android:layout_width="wrap_content"
-        android:layout_height="28dp"
-        android:layout_margin="8dp"
-        android:background="@null"
-        android:padding="0dp"
+        style="@style/ClearButton"
         android:text="@string/clear"
-        android:textColor="@color/colorAccent"
-        android:textSize="10sp"
         app:layout_constraintBottom_toTopOf="@+id/frameLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_database" />

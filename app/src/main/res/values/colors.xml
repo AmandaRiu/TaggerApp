@@ -2,7 +2,9 @@
 <resources>
     <color name="colorPrimary">#3898d4</color>
     <color name="colorPrimaryDark">#3a6fbe</color>
-    <color name="colorAccent">#FF3898D4</color>
+    <color name="colorAccent">#f1902f</color>
+    <color name="textColorPrimary">#000000</color>
+    <color name="textColorPrimaryDisableOnly">#cccccc</color>
 
     <color name="loading_bg">#b4f4f4</color>
     <color name="tag_json_bg">#c9e3e8e9</color>

@@ -84,7 +84,6 @@ internal constructor(private val mSelectedTags: MutableList<ITag>,
         return tagList.size
     }
 
-
     /**
      * Remove a tag from the list of selected tags. This will remove the [TagChipView]
      * from the associated layout.
@@ -148,7 +147,6 @@ internal constructor(private val mSelectedTags: MutableList<ITag>,
         return mFilteredSelectedTags!!.size
     }
 
-
     //region Filtering
     /**
      * {@inheritDoc}
@@ -198,7 +196,6 @@ internal constructor(private val mSelectedTags: MutableList<ITag>,
         }
     }
     //endregion
-
 
     inner class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         val view: TagChipView

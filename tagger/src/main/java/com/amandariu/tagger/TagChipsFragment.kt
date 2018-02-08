@@ -10,7 +10,6 @@ import android.widget.SearchView
 
 import java.util.ArrayList
 
-
 /**
  * A fragment displaying a list of all selected Tags each drawn as a [TagChipView].
  * Allows for removing a single Tag by clicking on it.
@@ -162,7 +161,6 @@ class TagChipsFragment : Fragment(), TagChipView.TagChipListener, SearchView.OnQ
         mAdapter!!.remove(tag)
     }
 
-
     //region Filtering
     /**
      * {@inheritDoc}
@@ -179,7 +177,6 @@ class TagChipsFragment : Fragment(), TagChipView.TagChipListener, SearchView.OnQ
         return true
     }
     //endregion
-
 
     /**
      * Listener for monitoring the closing of Tags. When a tag is closed, it has been

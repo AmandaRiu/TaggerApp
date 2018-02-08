@@ -12,13 +12,13 @@ buildscript {
         //
         // App dependencies
         guavaVersion = '18.0'
-        supportLibVersion = '27.0.1'
+        supportLibVersion = '27.0.2'
         constraintLayoutVersion = '1.0.2'
         retrofitVersion = '2.3.0'
         loganSquareVersion = '1.3.7'
         loganSquareConverterVersion = '1.4.1'
         gradlePluginVersion = '3.0.0'
-        lifecycleVersion = '1.0.0'
+        lifecycleVersion = '1.1.0'
         roomVersion = '1.0.0'
         //
         // Testing
