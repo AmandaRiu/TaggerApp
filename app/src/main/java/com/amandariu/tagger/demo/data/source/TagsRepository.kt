@@ -33,6 +33,7 @@ private constructor(private var mTagsRemoteDataSource: ITagsDataSource?,
          * @param remoteDatasource The remote data source.
          * @return The [TagsRepository] instance.
          */
+        @JvmStatic
         fun getInstance(remoteDatasource: ITagsDataSource,
                         localDatasource: ITagsDataSource): TagsRepository {
             if (sInstance == null) {

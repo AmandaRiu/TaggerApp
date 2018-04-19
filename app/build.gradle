@@ -32,8 +32,9 @@ android {
             testProguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguardTest-rules.pro'
         }
         release {
+            // todo Configure proguard
             minifyEnabled true
-            useProguard true
+            useProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             testProguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguardTest-rules.pro'
         }
@@ -94,10 +95,8 @@ dependencies {
     //
     // Lifecycle architecture
     implementation "android.arch.lifecycle:extensions:$lifecycleVersion"
-    annotationProcessor "android.arch.lifecycle:compiler:$lifecycleVersion"
-    implementation "android.arch.lifecycle:extensions:$lifecycleVersion"
+    kapt "android.arch.lifecycle:compiler:$lifecycleVersion"
     implementation "android.arch.persistence.room:runtime:$roomVersion"
-    annotationProcessor "android.arch.persistence.room:compiler:$roomVersion"
     kapt "android.arch.persistence.room:compiler:$roomVersion"
     //
     // Dependencies for local unit tests

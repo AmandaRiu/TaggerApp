@@ -35,7 +35,7 @@ class TagsRemoteDataSource : ITagsDataSource {
     }
 
     internal interface TagsRemoteApi {
-        @get:GET("/jgritman/7f2e89d1937ba9d9fc678f4c9844cbf1/raw/729eecaacbe749fbeeb891cc430d55235aa8036a/tags.json")
+        @get:GET("/AmandaRiu/e0cc046200d734bf64c90e36ad21967a/raw/959a5d638b587022ecf93a10e225b0f341240caf/tags.json")
         val tags: Call<List<Tag>>
     }
 
